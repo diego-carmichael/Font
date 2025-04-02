@@ -6,8 +6,10 @@
 
 namespace gfx {
 	typedef uint8_t menuType;
-	extern const menuType menuUnknown;
-	extern const menuType menuButton;
+	const menuType menuUnknown = 0;
+	const menuType menuButton = 1;
+	const menuType menuSelected = 2;
+	const menuType menuUnselected = 3;
 
 	typedef struct menu menu;
 	struct menu {

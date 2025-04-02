@@ -2,6 +2,7 @@
 
 #include "gui/scene.hpp"
 #include "general/event.hpp"
+#include "create/infoBox/infoBox.hpp"
 
 namespace cr {
 	namespace cv {
@@ -14,8 +15,9 @@ namespace cr {
 				ev::listener* cursorMoveListener;
 				ev::listener* cursorScrollListener;
 				gfx::rect coverage;
+				ib::infoBox* box;
 			public:
-				background(gfx::surface* sf, gfx::rect coverage);
+				background(gfx::surface* sf, gfx::rect coverage, ib::infoBox* box);
 				~background(void);
 				void render(background* bg);
 				void changeCoverage(gfx::rect coverage);

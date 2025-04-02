@@ -11,6 +11,7 @@ namespace osw32 {
 	typedef struct d2d d2d;
 	struct d2d {
 		ID2D1Factory* factory;
+		IDXGIDevice* device;
 		ID2D1HwndRenderTarget* target;
 		ID2D1SolidColorBrush* brush;
 		gfx::col brushCol;

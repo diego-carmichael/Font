@@ -2,6 +2,7 @@
 
 #include "dbg/log.hpp"
 #include "create/logic/font.hpp"
+#include "os/time.hpp"
 
 cr::creationScene::creationScene(gfx::surface* sf)
 : sf(sf),
@@ -13,8 +14,9 @@ cr::creationScene::creationScene(gfx::surface* sf)
 	this->handleMenu();
 	sf->setName("Font - " + fnt::currentFont.name);
 
-	this->determineCoverage();
 	this->infoBox = new cr::ib::infoBox(sf, this->defaultFont);
+	this->rcMenu = new cr::rc::rcMenu(sf);
+	this->determineCoverage();
 
 	this->resizeListener = sf->onResize.addListener(
 		(void*)this, cr::resize
@@ -28,11 +30,13 @@ cr::creationScene::creationScene(gfx::surface* sf)
 }
 
 cr::creationScene::~creationScene(void) {
+	os::closeTimers();
 	fnt::currentFont.cv.onCanvasChange.removeListener(this->canvasChangeListener);
 	this->sf->onRender.removeListener(this->renderListener);
 	this->sf->onResize.removeListener(this->resizeListener);
-	delete this->infoBox;
 	delete this->canvas;
+	delete this->rcMenu;
+	delete this->infoBox;
 	this->sf->deloadFont(&this->defaultFont);
 }
 
@@ -47,7 +51,7 @@ void cr::creationScene::determineCoverage(void) {
 	coverage.w = fw;
 	coverage.h = fh;
 	if (!this->canvas) {
-		this->canvas = new cr::cv::canvasSection(sf, coverage);
+		this->canvas = new cr::cv::canvasSection(sf, coverage, this->infoBox);
 	} else {
 		this->canvas->changeCoverage(coverage);
 	}

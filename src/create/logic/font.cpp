@@ -7,6 +7,23 @@ fnt::font::font(void) {
 	this->name = "Untitled font";
 	this->actionSet = cr::actionSetCanvas;
 	this->action = cr::actionCanvasIdle;
+
+	this->glyphs = std::vector<fnt::glyph>(1, { 0, std::vector<fnt::contour>(0) });
+	this->currentGlyph = 0;
+}
+
+void fnt::font::changeAction(cr::actionSet actionSet, cr::action action) {
+	dbg::log(
+		"[ACTION] From \"" + cr::actionStr(this->actionSet, this->action) +
+		"\" to \"" + cr::actionStr(actionSet, action) + "\"\n"
+	);
+
+	cr::actionDesc desc {};
+	desc.ac = this->action;
+	desc.set = this->actionSet;
+	this->actionSet = actionSet;
+	this->action = action;
+	onActionChange.call(&desc);
 }
 
 fnt::font fnt::currentFont {};

@@ -108,9 +108,30 @@ void gfx::surface::renderLine(gfx::point p0, gfx::point p1, gfx::col color) {
 }
 
 // https://learn.microsoft.com/en-us/windows/win32/direct2d/how-to--draw-text
-void gfx::surface::renderText(gfx::font* f, std::wstring str, gfx::rect bound, gfx::col color) {
-	osw32::window* win = (osw32::window*)this->data;
+void gfx::surface::renderText(gfx::font* f, std::wstring str, gfx::rect bound, gfx::col color, gfx::rect* tightBound) {
 	osw32::font* font = (osw32::font*)f->data;
+	osw32::window* win = (osw32::window*)this->data;
+
+	if (tightBound) {
+		IDWriteTextLayout* layout;
+		win->ren.write->CreateTextLayout(
+			str.c_str(), str.size(),
+			font->textFormat,
+			bound.w, bound.h,
+			&layout
+		);
+
+		DWRITE_TEXT_METRICS metrics;
+		layout->GetMetrics(&metrics);
+		tightBound->w = metrics.width;
+		tightBound->h = metrics.height;
+		tightBound->x = bound.x - (bound.w / 2.f) + (metrics.width  / 2.f);
+		tightBound->y = bound.y - (bound.h / 2.f) + (metrics.height / 2.f);
+
+		layout->Release();
+		return;
+	}
+
 	osw32::brushCol(&win->ren, color);
 	D2D1_RECT_F d2drect = D2D1::RectF(
 		bound.x - (bound.w / 2.f),

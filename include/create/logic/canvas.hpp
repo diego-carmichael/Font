@@ -8,10 +8,16 @@ namespace fnt {
 	public:
 		canvas(void);
 
+	public:
 		// Position relative to center of coverage
 		gfx::rect unscaled;
 		float scale;
 
+		float ascender; // Relative to top of canvas (moving down)
+		float descender; // Relative to ascender (moving down)
+		float lineGap; // Relative to ascender (moving up) / descender (moving down)
+
+	public:
 		// Non-relative to center of coverage (actually where it is)
 		gfx::rect getUnscaled(gfx::rect coverage);
 		gfx::rect getScaled(gfx::rect coverage);

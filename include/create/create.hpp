@@ -4,6 +4,7 @@
 #include "create/canvas/canvas.hpp"
 #include "general/event.hpp"
 #include "create/infoBox/infoBox.hpp"
+#include "create/rcMenu/rcMenu.hpp"
 
 namespace cr {
 	class creationScene : public gui::scene {
@@ -11,6 +12,7 @@ namespace cr {
 		gfx::surface* sf;
 		cv::canvasSection* canvas;
 		ib::infoBox* infoBox;
+		rc::rcMenu* rcMenu;
 		ev::listener* resizeListener;
 		ev::listener* renderListener;
 		ev::listener* canvasChangeListener;

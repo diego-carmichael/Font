@@ -32,6 +32,7 @@ namespace gfx {
 
 	public:
 		void setMenu(std::vector<menu> mn);
+		void setRightClickMenu(std::vector<menu> mn);
 		std::string dialogueOpenFile(fileMenu* mn); // Returns "" on failure
 		std::string dialogueSaveFile(fileMenu* mn); // Returns "" on failure
 
@@ -46,6 +47,8 @@ namespace gfx {
 		ev::event onCursorScroll {}; // (void*)float[1]
 		// ^ 1.f represents a "full scroll", + means up, - means down
 
+		ev::event onRightClickMenuAppearing {}; // 0
+
 	public:
 		bool isKeyDown(gfx::inp::keyboardKey key);
 		bool isMouseDown(gfx::inp::mouseButton button);
@@ -56,7 +59,7 @@ namespace gfx {
 		// == Must only be called in listening to onRender ==
 		void renderRect(rect r, col color);
 		void renderLine(point p0, point p1, col color);
-		void renderText(font* f, std::wstring str, rect bound, col color);
+		void renderText(font* f, std::wstring str, rect bound, col color, rect* tightBound); // tightBound can be 0; if it is 0, nothing renders
 
 	public:
 		size_t getNumFonts(void);

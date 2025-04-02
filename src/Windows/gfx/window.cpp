@@ -89,6 +89,14 @@ namespace osw32 {
 					}
 				}
 				if (!found) {
+					for (size_t m = 0; m < win->currentRCMenu.size(); ++m) {
+						found = callMenuID(&win->currentRCMenu[m], LOWORD(wParam));
+						if (found) {
+							break;
+						}
+					}
+				}
+				if (!found) {
 					dbg::log("WM_COMMAND with unrecognized ID " + std::to_string(LOWORD(wParam)) + "? Weird!\n");
 				}
 			} break;
@@ -118,6 +126,13 @@ namespace osw32 {
 			} break;
 			case WM_RBUTTONDOWN: {
 				win->sf->onMousePress.call((void*)((size_t)gfx::inp::mouseRight));
+				if (win->currentRCMenu.size() == 0) {
+					break;
+				}
+				POINT point;
+				GetCursorPos(&point);
+				win->sf->onRightClickMenuAppearing.call(0);
+				TrackPopupMenu(win->hRCMenu, 0, point.x, point.y, 0, win->hwnd, NULL);
 			} break;
 			case WM_RBUTTONUP: {
 				win->sf->onMouseRelease.call((void*)((size_t)gfx::inp::mouseRight));

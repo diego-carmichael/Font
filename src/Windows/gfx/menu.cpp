@@ -4,10 +4,20 @@
 
 #include "gfx/surface.hpp"
 #include "Windows/gfx/window.hpp"
+#include "dbg/log.hpp"
 
 #include <cstdint>
 
 namespace osw32 {
+	UINT popupFlags(gfx::menuType menuType) {
+		switch (menuType) {
+			default: return MF_STRING; break;
+			case gfx::menuButton:      return MF_STRING | MF_POPUP; break;
+			case gfx::menuSelected:    return MF_STRING | MF_GRAYED | MF_CHECKED; break;
+			case gfx::menuUnselected:  return MF_STRING | MF_ENABLED; break;
+		}
+	}
+
 	menu processGfxMenu(gfx::menu* gfxMenu, UINT* pid, HMENU parentMenu) {
 		menu mn {};
 		mn.data = gfxMenu->data;
@@ -16,7 +26,7 @@ namespace osw32 {
 
 		mn.hMenu = CreatePopupMenu();
 		if (gfxMenu->subMenus.size() > 0) {
-			AppendMenu(parentMenu, MF_STRING | MF_POPUP, static_cast<UINT>(reinterpret_cast<uintptr_t>(mn.hMenu)), gfxMenu->title.c_str());
+			AppendMenu(parentMenu, popupFlags(gfxMenu->type), static_cast<UINT>(reinterpret_cast<uintptr_t>(mn.hMenu)), gfxMenu->title.c_str());
 			for (size_t m = 0; m < gfxMenu->subMenus.size(); ++m) {
 				mn.subMenus[m] = processGfxMenu(&gfxMenu->subMenus[m], pid, mn.hMenu);
 			}
@@ -24,7 +34,7 @@ namespace osw32 {
 		else {
 			*pid += 1;
 			mn.id = *pid;
-			AppendMenu(parentMenu, MF_STRING, mn.id, gfxMenu->title.c_str());
+			AppendMenu(parentMenu, popupFlags(gfxMenu->type), mn.id, gfxMenu->title.c_str());
 		}
 		return mn;
 	}
@@ -58,6 +68,17 @@ void gfx::surface::setMenu(std::vector<gfx::menu> mn) {
 		win->currentMenu[m] = osw32::processGfxMenu(&mn[m], &id, hMenu);
 	}
 	SetMenu(win->hwnd, hMenu);
+}
+
+void gfx::surface::setRightClickMenu(std::vector<gfx::menu> mn) {
+	osw32::window* win = (osw32::window*)this->data;
+	win->currentRCMenu = std::vector<osw32::menu>(mn.size());
+
+	win->hRCMenu = CreatePopupMenu();
+	UINT id = 10000;
+	for (size_t m = 0; m < mn.size(); ++m) {
+		win->currentRCMenu[m] = osw32::processGfxMenu(&mn[m], &id, win->hRCMenu);
+	}
 }
 
 #endif

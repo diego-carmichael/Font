@@ -3,6 +3,8 @@
 #include "gfx/surface.hpp"
 #include "create/logic/action.hpp"
 #include "create/logic/canvas.hpp"
+#include "general/event.hpp"
+#include "create/logic/glyph.hpp"
 
 #include <string>
 
@@ -13,8 +15,16 @@ namespace fnt {
 		
 		canvas cv;
 		std::string name;
+
 		cr::actionSet actionSet;
 		cr::action action;
+
+		std::vector<glyph> glyphs;
+		size_t currentGlyph;
+
+	public:
+		ev::event onActionChange {}; // (actionDesc prevAction)
+		void changeAction(cr::actionSet actionSet, cr::action action);
 	};
 
 	extern font currentFont;

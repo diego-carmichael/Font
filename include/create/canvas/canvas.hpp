@@ -2,7 +2,9 @@
 
 #include "gui/scene.hpp"
 #include "create/canvas/background/background.hpp"
+#include "create/canvas/metrics/metrics.hpp"
 #include "create/canvas/grid/grid.hpp"
+#include "create/infoBox/infoBox.hpp"
 
 namespace cr {
 	namespace cv {
@@ -10,12 +12,11 @@ namespace cr {
 		public:
 			gfx::surface* sf;
 			bg::background* bg;
+			mt::metrics* metrics;
 			gr::grid* grid;
-			ev::listener* renderListener;
-			ev::listener* changedListener;
 			gfx::rect coverage;
 		public:
-			canvasSection(gfx::surface* sf, gfx::rect coverage);
+			canvasSection(gfx::surface* sf, gfx::rect coverage, ib::infoBox* box);
 			~canvasSection(void);
 
 			void changeCoverage(gfx::rect newCoverage);

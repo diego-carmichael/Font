@@ -7,6 +7,10 @@ namespace fnt {
 		this->unscaled.w = 256;
 		this->unscaled.h = 256;
 		this->scale = 1;
+
+		this->ascender = 64.f;
+		this->descender = 128.f;
+		this->lineGap = 40.f;
 	}
 
 	gfx::rect canvas::getUnscaled(gfx::rect coverage) {

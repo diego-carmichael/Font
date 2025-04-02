@@ -15,6 +15,8 @@ namespace osw32 {
 		d2d ren;
 		gfx::surface* sf;
 		std::vector<menu> currentMenu;
+		std::vector<menu> currentRCMenu;
+		HMENU hRCMenu;
 	};
 
 	extern std::vector<window*> winmap;

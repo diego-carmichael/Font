@@ -4,9 +4,12 @@
 #include "create/logic/font.hpp"
 #include "create/logic/action.hpp"
 
-cr::cv::bg::background::background(gfx::surface* sf, gfx::rect coverage) {
+#include <cmath>
+
+cr::cv::bg::background::background(gfx::surface* sf, gfx::rect coverage, ib::infoBox* box) {
 	this->sf = sf;
 	this->coverage = coverage;
+	this->box = box;
 
 	this->mousePressListener = sf->onMousePress.addListener(
 		(void*)this, cr::cv::bg::mousePress
@@ -32,6 +35,7 @@ cr::cv::bg::background::~background(void) {
 void cr::cv::bg::background::render(cr::cv::bg::background* bg) {
 	bg->sf->renderRect(bg->coverage, { 0.2f, 0.2f, 0.2f, 1.f });
 	gfx::rect canvasRect = fnt::currentFont.cv.getScaled(bg->coverage);
+	canvasRect.h -= 1.f; // To avoid lines appearing because of metrics
 	bg->sf->renderRect(canvasRect, { 1.f, 1.f, 1.f, 1.f });
 }
 
@@ -41,8 +45,7 @@ void cr::cv::bg::background::changeCoverage(gfx::rect coverage) {
 
 void cr::cv::bg::mousePress(ev::listener* l, void* data) {
 	if (
-		fnt::currentFont.actionSet != cr::actionSetCanvas ||
-		fnt::currentFont.action != cr::actionCanvasIdle
+		fnt::currentFont.action != 0
 	) {
 		return;
 	}
@@ -53,26 +56,22 @@ void cr::cv::bg::mousePress(ev::listener* l, void* data) {
 		button == gfx::inp::mouseLeft &&
 		bg->sf->isKeyDown(gfx::inp::keyboardLCtrl)
 	) {
-		dbg::log("[ACTION] Moving canvas...\n");
-		fnt::currentFont.action = cr::actionCanvasMoving;
+		fnt::currentFont.changeAction(cr::actionSetCanvas, cr::actionCanvasMoving);
 		bg->sf->getMousePos(&bg->lastCursorPos[0], &bg->lastCursorPos[1]);
 	}
 }
 
 void cr::cv::bg::mouseRelease(ev::listener* l, void* data) {
 	if (
-		fnt::currentFont.actionSet == cr::actionSetCanvas &&
-		fnt::currentFont.action == cr::actionCanvasMoving
+		fnt::currentFont.action == 2
 	) {
-		dbg::log("[ACTION] Moved canvas\n");
-		fnt::currentFont.action = cr::actionCanvasIdle;
+		fnt::currentFont.changeAction(cr::actionSetCanvas, cr::actionCanvasIdle);
 	}
 }
 
 void cr::cv::bg::cursorMove(ev::listener* l, void* data) {
 	if (
-		fnt::currentFont.actionSet != cr::actionSetCanvas ||
-		fnt::currentFont.action != cr::actionCanvasMoving
+		fnt::currentFont.action != 2
 	) {
 		return;
 	}
@@ -89,8 +88,7 @@ void cr::cv::bg::cursorMove(ev::listener* l, void* data) {
 
 void cr::cv::bg::cursorScroll(ev::listener* l, void* data) {
 	if (
-		fnt::currentFont.actionSet != cr::actionSetCanvas ||
-		fnt::currentFont.action != cr::actionCanvasIdle
+		fnt::currentFont.action != 0
 	) {
 		return;
 	}
@@ -103,4 +101,9 @@ void cr::cv::bg::cursorScroll(ev::listener* l, void* data) {
 		fnt::currentFont.cv.scale + (scrollVal * fnt::currentFont.cv.scale),
 		bg->coverage, mousePos[0], mousePos[1]
 	);
+
+	float num = roundf(fnt::currentFont.cv.scale * 1000.f);
+	std::wstring snum = std::to_wstring((int)num);
+	snum.insert(snum.end()-1, L'.');
+	bg->box->setText(snum + L"%");
 }
