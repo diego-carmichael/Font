@@ -18,6 +18,8 @@ namespace cr {
 				switch (ac) {
 					default: return "Edit unknown"; break;
 					case actionEditIdle: return "Edit idle"; break;
+					case actionCanvasMoving: return "Edit moving"; break;
+					case actionEditMovingPoints: return "Edit moving points"; break;
 				}
 			} break;
 		}

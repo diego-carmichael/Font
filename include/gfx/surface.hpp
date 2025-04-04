@@ -58,7 +58,10 @@ namespace gfx {
 
 	public:
 		// == Must only be called in listening to onRender ==
+		void renderLine(line l, col color);
+		void renderDashedLine(line l, col color);
 		void renderRect(rect r, col color);
+		void renderCircle(circle c, col color);
 		void renderLine(point p0, point p1, col color);
 		void renderText(font* f, std::wstring str, rect bound, col color, rect* tightBound); // tightBound can be 0; if it is 0, nothing renders
 		void renderShape(shape* s);

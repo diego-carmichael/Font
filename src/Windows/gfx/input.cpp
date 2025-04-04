@@ -24,6 +24,8 @@ namespace osw32 {
 			default: return gfx::inp::keyboardUnknown; break;
 			case VK_LCONTROL: return gfx::inp::keyboardLCtrl; break;
 			case VK_RCONTROL: return gfx::inp::keyboardRCtrl; break;
+			case VK_LSHIFT: return gfx::inp::keyboardLShift; break;
+			case VK_RSHIFT: return gfx::inp::keyboardRShift; break;
 		}
 	}
 
@@ -32,6 +34,8 @@ namespace osw32 {
 			default: return 0; break;
 			case gfx::inp::keyboardLCtrl: return VK_LCONTROL; break;
 			case gfx::inp::keyboardRCtrl: return VK_RCONTROL; break;
+			case gfx::inp::keyboardLShift: return VK_LSHIFT; break;
+			case gfx::inp::keyboardRShift: return VK_RSHIFT; break;
 		}
 	}
 }

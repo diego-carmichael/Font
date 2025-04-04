@@ -75,12 +75,14 @@ namespace cr {
 			fnt::currentFont.changeAction(cr::actionSetCanvas, cr::actionCanvasIdle);
 			rcMenu* menu = (rcMenu*)data;
 			menu->process();
+			menu->sf->flagRender();
 		}
 
 		void changeToEdit(void* data) {
 			fnt::currentFont.changeAction(cr::actionSetEdit, cr::actionEditIdle);
 			rcMenu* menu = (rcMenu*)data;
 			menu->process();
+			menu->sf->flagRender();
 		}
 	}
 }

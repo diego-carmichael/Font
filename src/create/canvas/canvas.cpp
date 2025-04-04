@@ -31,6 +31,9 @@ void cr::cv::canvasSection::changeCoverage(gfx::rect newCoverage) {
 void cr::cv::canvasSection::render(void) {
 	this->bg->render(this->bg);
 	this->metrics->render();
-	this->glyph->render();
+	this->glyph->renderGlyph();
 	this->grid->render();
+	this->glyph->renderPoints(
+		&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph]
+	);
 }

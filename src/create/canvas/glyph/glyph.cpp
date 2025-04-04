@@ -1,7 +1,8 @@
 #include "create/canvas/glyph/glyph.hpp"
 
 #include "dbg/log.hpp"
-#include "create/logic/font.hpp"
+
+#include <cmath>
 
 namespace cr {
 	namespace cv {
@@ -10,108 +11,232 @@ namespace cr {
 				this->sf = sf;
 				this->coverage = coverage;
 				this->box = box;
+				this->pointBigRadius = 7.f;
+
+				this->mousePressListener = sf->onMousePress.addListener(
+					(void*)this, mousePress
+				);
+				this->mouseReleaseListener = sf->onMouseRelease.addListener(
+					(void*)this, mouseRelease
+				);
+				this->cursorMoveListener = sf->onCursorMove.addListener(
+					(void*)this, cursorMove
+				);
 			}
 
 			glyph::~glyph(void) {
-
+				this->sf->onCursorMove.removeListener(this->cursorMoveListener);
+				this->sf->onMouseRelease.removeListener(this->mouseReleaseListener);
+				this->sf->onMousePress.removeListener(this->mousePressListener);
 			}
 
-			void glyph::render(void) {
-				// B
-				fnt::glyph testGlyph {};
-				testGlyph.contours = std::vector<fnt::contour>(3);
-				testGlyph.contours[0].type = fnt::contourTypeTTF;
-				testGlyph.contours[0].data.ttf.in = true;
-				testGlyph.contours[0].data.ttf.points = std::vector<fnt::ttfPoint>(11);
-					testGlyph.contours[0].data.ttf.points[0].x = 86;
-					testGlyph.contours[0].data.ttf.points[0].y = 64;
-					testGlyph.contours[0].data.ttf.points[0].on = true;
-					testGlyph.contours[0].data.ttf.points[1].x = 120;
-					testGlyph.contours[0].data.ttf.points[1].y = 64;
-					testGlyph.contours[0].data.ttf.points[1].on = true;
-					testGlyph.contours[0].data.ttf.points[2].x = 164;
-					testGlyph.contours[0].data.ttf.points[2].y = 64;
-					testGlyph.contours[0].data.ttf.points[2].on = false;
-					testGlyph.contours[0].data.ttf.points[3].x = 164;
-					testGlyph.contours[0].data.ttf.points[3].y = 94;
-					testGlyph.contours[0].data.ttf.points[3].on = true;
-					testGlyph.contours[0].data.ttf.points[4].x = 164;
-					testGlyph.contours[0].data.ttf.points[4].y = 124;
-					testGlyph.contours[0].data.ttf.points[4].on = false;
-					testGlyph.contours[0].data.ttf.points[5].x = 144;
-					testGlyph.contours[0].data.ttf.points[5].y = 124;
-					testGlyph.contours[0].data.ttf.points[5].on = true;
-					testGlyph.contours[0].data.ttf.points[6].x = 168;
-					testGlyph.contours[0].data.ttf.points[6].y = 124;
-					testGlyph.contours[0].data.ttf.points[6].on = false;
-					testGlyph.contours[0].data.ttf.points[7].x = 168;
-					testGlyph.contours[0].data.ttf.points[7].y = 154;
-					testGlyph.contours[0].data.ttf.points[7].on = true;
-					testGlyph.contours[0].data.ttf.points[8].x = 168;
-					testGlyph.contours[0].data.ttf.points[8].y = 192;
-					testGlyph.contours[0].data.ttf.points[8].on = false;
-					testGlyph.contours[0].data.ttf.points[9].x = 120;
-					testGlyph.contours[0].data.ttf.points[9].y = 192;
-					testGlyph.contours[0].data.ttf.points[9].on = true;
-					testGlyph.contours[0].data.ttf.points[10].x = 86;
-					testGlyph.contours[0].data.ttf.points[10].y = 192;
-					testGlyph.contours[0].data.ttf.points[10].on = true;
-				testGlyph.contours[1].type = fnt::contourTypeTTF;
-				testGlyph.contours[1].data.ttf.in = false;
-				testGlyph.contours[1].data.ttf.points = std::vector<fnt::ttfPoint>(7);
-					testGlyph.contours[1].data.ttf.points[0].x = 104;
-					testGlyph.contours[1].data.ttf.points[0].y = 78;
-					testGlyph.contours[1].data.ttf.points[0].on = true;
-					testGlyph.contours[1].data.ttf.points[1].x = 120;
-					testGlyph.contours[1].data.ttf.points[1].y = 78;
-					testGlyph.contours[1].data.ttf.points[1].on = true;
-					testGlyph.contours[1].data.ttf.points[2].x = 146;
-					testGlyph.contours[1].data.ttf.points[2].y = 78;
-					testGlyph.contours[1].data.ttf.points[2].on = false;
-					testGlyph.contours[1].data.ttf.points[3].x = 146;
-					testGlyph.contours[1].data.ttf.points[3].y = 96;
-					testGlyph.contours[1].data.ttf.points[3].on = true;
-					testGlyph.contours[1].data.ttf.points[4].x = 146;
-					testGlyph.contours[1].data.ttf.points[4].y = 118;
-					testGlyph.contours[1].data.ttf.points[4].on = false;
-					testGlyph.contours[1].data.ttf.points[5].x = 120;
-					testGlyph.contours[1].data.ttf.points[5].y = 118;
-					testGlyph.contours[1].data.ttf.points[5].on = true;
-					testGlyph.contours[1].data.ttf.points[6].x = 104;
-					testGlyph.contours[1].data.ttf.points[6].y = 118;
-					testGlyph.contours[1].data.ttf.points[6].on = true;
-				testGlyph.contours[2].type = fnt::contourTypeTTF;
-				testGlyph.contours[2].data.ttf.in = false;
-				testGlyph.contours[2].data.ttf.points = std::vector<fnt::ttfPoint>(7);
-					testGlyph.contours[2].data.ttf.points[0].x = 104;
-					testGlyph.contours[2].data.ttf.points[0].y = 132;
-					testGlyph.contours[2].data.ttf.points[0].on = true;
-					testGlyph.contours[2].data.ttf.points[1].x = 120;
-					testGlyph.contours[2].data.ttf.points[1].y = 132;
-					testGlyph.contours[2].data.ttf.points[1].on = true;
-					testGlyph.contours[2].data.ttf.points[2].x = 150;
-					testGlyph.contours[2].data.ttf.points[2].y = 132;
-					testGlyph.contours[2].data.ttf.points[2].on = false;
-					testGlyph.contours[2].data.ttf.points[3].x = 150;
-					testGlyph.contours[2].data.ttf.points[3].y = 154;
-					testGlyph.contours[2].data.ttf.points[3].on = true;
-					testGlyph.contours[2].data.ttf.points[4].x = 150;
-					testGlyph.contours[2].data.ttf.points[4].y = 176;
-					testGlyph.contours[2].data.ttf.points[4].on = false;
-					testGlyph.contours[2].data.ttf.points[5].x = 120;
-					testGlyph.contours[2].data.ttf.points[5].y = 176;
-					testGlyph.contours[2].data.ttf.points[5].on = true;
-					testGlyph.contours[2].data.ttf.points[6].x = 104;
-					testGlyph.contours[2].data.ttf.points[6].y = 176;
-					testGlyph.contours[2].data.ttf.points[6].on = true;
+			void glyph::renderContourTTF(fnt::ttfContour* c) {
+				// (Must be rendered separately for order)
 
+				// Lines
+				for (size_t p = 0; p < c->points.size(); ++p) {
+					float px = c->points[p].x, py = c->points[p].y;
+					px -= fnt::currentFont.cv.unscaled.w / 2.f;
+					py -= fnt::currentFont.cv.unscaled.h / 2.f;
+					fnt::currentFont.cv.canvasPosToClient(px, &px, py, &py, this->coverage);
+
+					size_t nextp = (p == c->points.size()-1) ?(0) :(p+1);
+					float pnx = c->points[nextp].x, pny = c->points[nextp].y;
+					pnx -= fnt::currentFont.cv.unscaled.w / 2.f;
+					pny -= fnt::currentFont.cv.unscaled.h / 2.f;
+					fnt::currentFont.cv.canvasPosToClient(pnx, &pnx, pny, &pny, this->coverage);
+					if (c->points[p].selected || c->points[nextp].selected) {
+						this->sf->renderLine({ px, py, pnx, pny, 5.f }, { .25f, .68f, 1.0f, .50f });
+					} else {
+						this->sf->renderDashedLine({ px, py, pnx, pny, 5.f }, { .50f, .50f, .50f, .50f });
+					}
+				}
+
+				// Points
+				for (size_t p = 0; p < c->points.size(); ++p) {
+					float px = c->points[p].x, py = c->points[p].y;
+					px -= fnt::currentFont.cv.unscaled.w / 2.f;
+					py -= fnt::currentFont.cv.unscaled.h / 2.f;
+					fnt::currentFont.cv.canvasPosToClient(px, &px, py, &py, this->coverage);
+					float radiu = this->pointBigRadius;
+
+					if (c->points[p].selected) {
+						this->sf->renderCircle({ px, py, radiu }, { .50f, .79f, 1.0f, 1.f });
+						this->sf->renderCircle({ px, py, 4.75f }, { .00f, .58f, 1.0f, 1.f });
+					} else {
+						this->sf->renderCircle({ px, py, radiu }, { .25f, .25f, .25f, 1.f });
+						this->sf->renderCircle({ px, py, 4.75f }, { .50f, .50f, .50f, 1.f });
+					}
+				}
+			}
+
+			void glyph::renderPoints(fnt::glyph* g) {
+				if (fnt::currentFont.actionSet != cr::actionSetEdit) {
+					return;
+				}
+
+				for (size_t c = 0; c < g->contours.size(); ++c) {
+					switch (g->contours[c].type) {
+						default: dbg::log("Unrecognized render glyph contour type! Weird!\n"); break;
+
+						case fnt::contourTypeTTF: {
+							this->renderContourTTF(&g->contours[c].data.ttf);
+						} break;
+					}
+				}
+			}
+
+			void glyph::renderGlyph(void) {
 				gfx::shape s;
-				fnt::currentFont.glyphToShape(&testGlyph, &s, this->coverage);
+				fnt::currentFont.glyphToShape(&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph], &s, this->coverage);
 				this->sf->renderShape(&s);
+				this->renderPoints(
+					&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph]
+				);
 			}
 
 			void glyph::changeCoverage(gfx::rect newCoverage) {
 				this->coverage = newCoverage;
+			}
+
+			void glyph::clickPointsContourTTF(fnt::ttfContour* c, float mx, float my, bool shift) {
+				for (size_t p = 0; p < c->points.size(); ++p) {
+					float px = c->points[p].x, py = c->points[p].y;
+					px -= fnt::currentFont.cv.unscaled.w / 2.f;
+					py -= fnt::currentFont.cv.unscaled.h / 2.f;
+					fnt::currentFont.cv.canvasPosToClient(px, &px, py, &py, this->coverage);
+
+					bool hover = (mx-px)*(mx-px) + (my-py)*(my-py) <= this->pointBigRadius*this->pointBigRadius;
+					if (!hover) {
+						if (!shift && c->points[p].selected) {
+							c->points[p].selected = false;
+						}
+					} else {
+						if (!c->points[p].selected) {
+							c->points[p].selected = true;
+						}
+					}
+				}
+			}
+
+			void glyph::movePointsContourTTF(fnt::ttfContour* c, float mx, float my) {
+				for (size_t p = 0; p < c->points.size(); ++p) {
+					if (!c->points[p].selected) {
+						continue;
+					}
+					if (
+						((float)c->points[p].x) + mx <= ((float)fnt::currentFont.cv.unscaled.w) &&
+						((float)c->points[p].x) + mx >= 0.f
+					) {
+						c->points[p].x += mx;
+					}
+					if (
+						((float)c->points[p].y) + my <= ((float)fnt::currentFont.cv.unscaled.h) &&
+						((float)c->points[p].y) + my >= 0.f
+					) {
+						c->points[p].y += my;
+					}
+				}
+			}
+
+			void glyph::clickPoints(fnt::glyph* g, float mx, float my, bool shift) {
+				for (size_t c = 0; c < g->contours.size(); ++c) {
+					switch (g->contours[c].type) {
+						default: dbg::log("Unrecognized click glyph contour type! Weird!\n"); break;
+
+						case fnt::contourTypeTTF: {
+							this->clickPointsContourTTF(&g->contours[c].data.ttf, mx, my, shift);
+						} break;
+					}
+				}
+			}
+
+			void glyph::movePoints(fnt::glyph* g, float mx, float my) {
+				for (size_t c = 0; c < g->contours.size(); ++c) {
+					switch (g->contours[c].type) {
+						default: dbg::log("Unrecognized move points contour type! Weird!\n"); break;
+
+						case fnt::contourTypeTTF: {
+							this->movePointsContourTTF(&g->contours[c].data.ttf, mx, my);
+						} break;
+					}
+				}
+			}
+
+			void mousePress(ev::listener* l, void* data) {
+				glyph* g = (glyph*)l->data;
+				if (static_cast<gfx::inp::mouseButton>((size_t)data) != gfx::inp::mouseLeft) {
+					return;
+				}
+				if (fnt::currentFont.actionSet != cr::actionSetEdit || fnt::currentFont.action != 0) {
+					return;
+				}
+
+				float mx, my;
+				g->sf->getMousePos(&mx, &my);
+				g->clickPoints(
+					&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph],
+					mx, my, g->sf->isKeyDown(gfx::inp::keyboardLShift)
+				);
+				g->sf->flagRender();
+				fnt::currentFont.changeAction(
+					cr::actionSetEdit, cr::actionEditMovingPoints
+				);
+
+				g->lastCursorPos[0] = mx;
+				g->lastCursorPos[1] = my;
+				fnt::currentFont.cv.clientPosToCanvas(
+					g->lastCursorPos[0], &g->lastCursorPos[0],
+					g->lastCursorPos[1], &g->lastCursorPos[1],
+					g->coverage
+				);
+				g->lastCursorPos[0] += fnt::currentFont.cv.unscaled.w / 2.f;
+				g->lastCursorPos[1] += fnt::currentFont.cv.unscaled.h / 2.f;
+				g->lastCursorPos[0] = roundf(g->lastCursorPos[0]);
+				g->lastCursorPos[1] = roundf(g->lastCursorPos[1]);
+			}
+
+			void mouseRelease(ev::listener* l, void* data) {
+				glyph* g = (glyph*)l->data;
+				if (static_cast<gfx::inp::mouseButton>((size_t)data) != gfx::inp::mouseLeft) {
+					return;
+				}
+				if (fnt::currentFont.actionSet != cr::actionSetEdit ||
+					fnt::currentFont.action != cr::actionEditMovingPoints
+				) {
+					return;
+				}
+
+				g->sf->flagRender();
+				fnt::currentFont.changeAction(
+					cr::actionSetEdit, 0
+				);
+			}
+
+			void cursorMove(ev::listener* l, void* data) {
+				glyph* g = (glyph*)l->data;
+				if (fnt::currentFont.actionSet != cr::actionSetEdit ||
+					fnt::currentFont.action != cr::actionEditMovingPoints
+				) {
+					return;
+				}
+
+				float* (pos) = (float*)data;
+				fnt::currentFont.cv.clientPosToCanvas(
+					pos[0], &pos[0], pos[1], &pos[1], g->coverage
+				);
+				pos[0] += fnt::currentFont.cv.unscaled.w / 2.f;
+				pos[1] += fnt::currentFont.cv.unscaled.h / 2.f;
+				pos[0] = roundf(pos[0]);
+				pos[1] = roundf(pos[1]);
+				g->movePoints(
+					&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph],
+					pos[0] - g->lastCursorPos[0], pos[1] - g->lastCursorPos[1]
+				);
+
+				g->lastCursorPos[0] = pos[0];
+				g->lastCursorPos[1] = pos[1];
+				g->sf->flagRender();
 			}
 		}
 	}

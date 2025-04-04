@@ -8,6 +8,8 @@ namespace gfx {
 		const keyboardKey keyboardUnknown = 0;
 		const keyboardKey keyboardLCtrl = 1;
 		const keyboardKey keyboardRCtrl = 2;
+		const keyboardKey keyboardLShift = 3;
+		const keyboardKey keyboardRShift = 4;
 
 		typedef uint16_t mouseButton;
 		const mouseButton mouseUnknown = 0;

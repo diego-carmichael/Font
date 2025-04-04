@@ -15,6 +15,7 @@ namespace fnt {
 		uint16_t x;
 		uint16_t y;
 		bool on;
+		bool selected;
 	};
 	typedef struct ttfContour ttfContour;
 	struct ttfContour {

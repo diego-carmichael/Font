@@ -56,7 +56,7 @@ void cr::cv::bg::mousePress(ev::listener* l, void* data) {
 		button == gfx::inp::mouseLeft &&
 		bg->sf->isKeyDown(gfx::inp::keyboardLCtrl)
 	) {
-		fnt::currentFont.changeAction(cr::actionSetCanvas, cr::actionCanvasMoving);
+		fnt::currentFont.changeAction(fnt::currentFont.actionSet, cr::actionCanvasMoving);
 		bg->sf->getMousePos(&bg->lastCursorPos[0], &bg->lastCursorPos[1]);
 	}
 }
@@ -65,7 +65,7 @@ void cr::cv::bg::mouseRelease(ev::listener* l, void* data) {
 	if (
 		fnt::currentFont.action == 2
 	) {
-		fnt::currentFont.changeAction(cr::actionSetCanvas, cr::actionCanvasIdle);
+		fnt::currentFont.changeAction(fnt::currentFont.actionSet, cr::actionCanvasIdle);
 	}
 }
 

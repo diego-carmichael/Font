@@ -29,4 +29,5 @@ namespace cr {
 	const actionSet actionSetEdit = 2;
 	const action actionEditIdle = 0;
 	const action actionEditMoving = 2;
+	const action actionEditMovingPoints = 3;
 }

@@ -85,6 +85,39 @@ void gfx::surface::flagRender(void) {
 	InvalidateRect(win->hwnd, NULL, FALSE);
 }
 
+void gfx::surface::renderLine(gfx::line l, gfx::col color) {
+	osw32::window* win = (osw32::window*)this->data;
+	osw32::brushCol(&win->ren, color);
+	win->ren.target->DrawLine(
+		D2D1::Point2F(l.x0, l.y0),
+		D2D1::Point2F(l.x1, l.y1),
+		win->ren.brush, l.width, NULL
+	);
+}
+
+void gfx::surface::renderDashedLine(gfx::line l, gfx::col color) {
+	osw32::window* win = (osw32::window*)this->data;
+	osw32::brushCol(&win->ren, color);
+
+	ID2D1StrokeStyle* style;
+	win->ren.factory->CreateStrokeStyle(
+		D2D1::StrokeStyleProperties(
+			// All default values besides D2D1_DASH_STYLE_DASH
+			D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT, D2D1_CAP_STYLE_FLAT,
+			D2D1_LINE_JOIN_MITER, 10.f,
+			D2D1_DASH_STYLE_DASH, 0.f
+		), 0, 0, &style
+	);
+
+	win->ren.target->DrawLine(
+		D2D1::Point2F(l.x0, l.y0),
+		D2D1::Point2F(l.x1, l.y1),
+		win->ren.brush, l.width, style
+	);
+
+	style->Release();
+}
+
 void gfx::surface::renderRect(gfx::rect r, gfx::col color) {
 	osw32::window* win = (osw32::window*)this->data;
 	osw32::brushCol(&win->ren, color);
@@ -95,6 +128,16 @@ void gfx::surface::renderRect(gfx::rect r, gfx::col color) {
 		r.y + (r.h / 2.f)
 	);
 	win->ren.target->FillRectangle(&d2drect, win->ren.brush);
+}
+
+void gfx::surface::renderCircle(gfx::circle c, gfx::col color) {
+	osw32::window* win = (osw32::window*)this->data;
+	osw32::brushCol(&win->ren, color);
+	D2D1_ELLIPSE ellipse = D2D1::Ellipse(
+		D2D1::Point2F(c.x, c.y),
+		c.r, c.r
+	);
+	win->ren.target->FillEllipse(&ellipse, win->ren.brush);
 }
 
 // https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-drawline
