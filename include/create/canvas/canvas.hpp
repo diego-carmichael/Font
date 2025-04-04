@@ -3,6 +3,7 @@
 #include "gui/scene.hpp"
 #include "create/canvas/background/background.hpp"
 #include "create/canvas/metrics/metrics.hpp"
+#include "create/canvas/glyph/glyph.hpp"
 #include "create/canvas/grid/grid.hpp"
 #include "create/infoBox/infoBox.hpp"
 
@@ -13,6 +14,7 @@ namespace cr {
 			gfx::surface* sf;
 			bg::background* bg;
 			mt::metrics* metrics;
+			gl::glyph* glyph;
 			gr::grid* grid;
 			gfx::rect coverage;
 		public:

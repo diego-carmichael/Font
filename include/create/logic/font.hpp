@@ -25,6 +25,9 @@ namespace fnt {
 	public:
 		ev::event onActionChange {}; // (actionDesc prevAction)
 		void changeAction(cr::actionSet actionSet, cr::action action);
+
+	public:
+		void glyphToShape(glyph* g, gfx::shape* s, gfx::rect coverage);
 	};
 
 	extern font currentFont;

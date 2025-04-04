@@ -6,6 +6,7 @@
 #include "gfx/dialogues.hpp"
 #include "gfx/input.hpp"
 #include "gfx/font.hpp"
+#include "gfx/shape.hpp"
 
 #include <cstdint>
 #include <string>
@@ -60,6 +61,7 @@ namespace gfx {
 		void renderRect(rect r, col color);
 		void renderLine(point p0, point p1, col color);
 		void renderText(font* f, std::wstring str, rect bound, col color, rect* tightBound); // tightBound can be 0; if it is 0, nothing renders
+		void renderShape(shape* s);
 
 	public:
 		size_t getNumFonts(void);

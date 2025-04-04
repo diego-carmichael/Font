@@ -94,6 +94,10 @@ void cr::cv::bg::cursorScroll(ev::listener* l, void* data) {
 	}
 
 	cr::cv::bg::background* bg = (cr::cv::bg::background*)l->data;
+	if (!bg->sf->isKeyDown(gfx::inp::keyboardLCtrl)) {
+		return;
+	}
+
 	float scrollVal = (*((float*)data)) * .1f;
 	float mousePos[2];
 	bg->sf->getMousePos(&mousePos[0], &mousePos[1]);

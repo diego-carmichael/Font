@@ -1,5 +1,7 @@
 #pragma once
 
+#include "gfx/shape.hpp"
+
 #include <vector>
 #include <cstdint>
 
@@ -10,7 +12,8 @@ namespace fnt {
 	const contourType contourTypeTTF = 1;
 	typedef struct ttfPoint ttfPoint;
 	struct ttfPoint {
-		uint16_t pos[2];
+		uint16_t x;
+		uint16_t y;
 		bool on;
 	};
 	typedef struct ttfContour ttfContour;
