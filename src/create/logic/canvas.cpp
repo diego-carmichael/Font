@@ -1,24 +1,27 @@
 #include "create/logic/canvas.hpp"
 
 namespace fnt {
-	canvas::canvas(void) {
-		this->unscaled.x = 0;
-		this->unscaled.y = 0;
-		this->unscaled.w = 256;
-		this->unscaled.h = 256;
-		this->scale = 1;
+	void defaultCanvasData(canvasData* data) {
+		data->unscaledDim[0] = 256;
+		data->unscaledDim[1] = 256;
+		data->ascender = 64;
+		data->descender = 128;
+		data->lineGap = 40;
+	}
 
-		this->ascender = 64.f;
-		this->descender = 128.f;
-		this->lineGap = 40.f;
+	canvas::canvas(void) {
+		defaultCanvasData(&this->data);
+		this->unscaledPos[0] = 0;
+		this->unscaledPos[1] = 0;
+		this->scale = 1;
 	}
 
 	gfx::rect canvas::getUnscaled(gfx::rect coverage) {
 		return {
-			coverage.x + this->unscaled.x,
-			coverage.y + this->unscaled.y,
-			this->unscaled.w,
-			this->unscaled.h
+			coverage.x + this->unscaledPos[0],
+			coverage.y + this->unscaledPos[1],
+			this->data.unscaledDim[0],
+			this->data.unscaledDim[1]
 		};
 	}
 
@@ -27,38 +30,32 @@ namespace fnt {
 		this->canvasPosToClient(0.f, &x, 0.f, &y, coverage);
 		return {
 			x, y,
-			this->unscaled.w * this->scale,
-			this->unscaled.h * this->scale
+			this->data.unscaledDim[0] * this->scale,
+			this->data.unscaledDim[1] * this->scale
 		};
 	}
 
 	void canvas::canvasPosToClient(float ix, float* ox, float iy, float* oy, gfx::rect coverage) {
 		if (ox) {
-			//*ox = coverage.x + ((ix+this->unscaled.x) * this->scale);
-			*ox = coverage.x + ((ix + this->unscaled.x) * this->scale);
+			*ox = coverage.x + ((ix + this->unscaledPos[0]) * this->scale);
 		}
 		if (oy) {
-			//*oy = coverage.y + ((iy+this->unscaled.y) * this->scale);
-			*oy = coverage.y + ((iy + this->unscaled.y) * this->scale);
+			*oy = coverage.y + ((iy + this->unscaledPos[1]) * this->scale);
 		}
 	}
 
 	void canvas::clientPosToCanvas(float ix, float* ox, float iy, float* oy, gfx::rect coverage) {
 		if (ox) {
-			//*ox = (ix / this->scale) - coverage.x;
-			//*ox = ((ix) / this->scale) - this->unscaled.x;
-			*ox = ((ix - coverage.x) / this->scale) - this->unscaled.x;
+			*ox = ((ix - coverage.x) / this->scale) - this->unscaledPos[0];
 		}
 		if (oy) {
-			//*oy = (iy / this->scale) - coverage.y;
-			//*oy = ((iy) / this->scale) - this->unscaled.y;
-			*oy = ((iy - coverage.y) / this->scale) - this->unscaled.y;
+			*oy = ((iy - coverage.y) / this->scale) - this->unscaledPos[1];
 		}
 	}
 
 	void canvas::moveScaled(float diffX, float diffY) {
-		this->unscaled.x += diffX / this->scale;
-		this->unscaled.y += diffY / this->scale;
+		this->unscaledPos[0] += diffX / this->scale;
+		this->unscaledPos[1] += diffY / this->scale;
 		this->onCanvasChange.call(0);
 	}
 
@@ -67,12 +64,12 @@ namespace fnt {
 		// Does it work? Yeah I think
 		float cx, cy;
 		this->clientPosToCanvas(x, &cx, y, &cy, coverage);
-		this->unscaled.x -= cx + this->unscaled.x;
-		this->unscaled.y -= cy + this->unscaled.y;
+		this->unscaledPos[0] -= cx + this->unscaledPos[0];
+		this->unscaledPos[1] -= cy + this->unscaledPos[1];
 		this->scale = newScale;
 		this->clientPosToCanvas(x, &cx, y, &cy, coverage);
-		this->unscaled.x += cx + this->unscaled.x;
-		this->unscaled.y += cy + this->unscaled.y;
+		this->unscaledPos[0] += cx + this->unscaledPos[0];
+		this->unscaledPos[1] += cy + this->unscaledPos[1];
 		this->onCanvasChange.call(0);
 	}
 }

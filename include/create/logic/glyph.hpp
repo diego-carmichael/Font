@@ -39,4 +39,6 @@ namespace fnt {
 		uint32_t codepoint;
 		std::vector<contour> contours;
 	};
+
+	bool anyPointsSelected(glyph* g);
 }

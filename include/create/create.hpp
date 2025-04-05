@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gui/scene.hpp"
+#include "create/history/history.hpp"
 #include "create/canvas/canvas.hpp"
 #include "general/event.hpp"
 #include "create/infoBox/infoBox.hpp"
@@ -11,6 +12,7 @@ namespace cr {
 	public:
 		gfx::surface* sf;
 		cv::canvasSection* canvas;
+		hst::history* history;
 		ib::infoBox* infoBox;
 		rc::rcMenu* rcMenu;
 		ev::listener* resizeListener;

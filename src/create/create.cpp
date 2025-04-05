@@ -12,8 +12,9 @@ cr::creationScene::creationScene(gfx::surface* sf)
 	this->defaultFont = sf->loadFont(sf->getDefaultFont(), 9.f);
 
 	this->handleMenu();
-	sf->setName("Font - " + fnt::currentFont.name);
+	sf->setName("Font - " + fnt::currentFont.data.name);
 
+	this->history = new cr::hst::history(sf);
 	this->infoBox = new cr::ib::infoBox(sf, this->defaultFont);
 	this->rcMenu = new cr::rc::rcMenu(sf);
 	this->determineCoverage();
@@ -37,6 +38,7 @@ cr::creationScene::~creationScene(void) {
 	delete this->canvas;
 	delete this->rcMenu;
 	delete this->infoBox;
+	delete this->history;
 	this->sf->deloadFont(&this->defaultFont);
 }
 

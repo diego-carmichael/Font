@@ -57,8 +57,8 @@ namespace fnt {
 			size_t p = (shouldFlip) ?((ttf->points.size()-pa)-1) :(pa);
 			if (ttf->points[p].on) {
 				if (pa == 0) {
-					c->initialX = ((float)ttf->points[p].x) - (f->cv.unscaled.w / 2.f);
-					c->initialY = ((float)ttf->points[p].y) - (f->cv.unscaled.h / 2.f);
+					c->initialX = ((float)ttf->points[p].x) - (f->cv.data.unscaledDim[0] / 2.f);
+					c->initialY = ((float)ttf->points[p].y) - (f->cv.data.unscaledDim[1] / 2.f);
 					f->cv.canvasPosToClient(
 						c->initialX, &c->initialX, c->initialY, &c->initialY, coverage
 					);
@@ -66,8 +66,8 @@ namespace fnt {
 					gfx::path path;
 					path.type = gfx::pathTypeLine;
 
-					path.data.line.x = ((float)ttf->points[p].x) - (f->cv.unscaled.w / 2.f);
-					path.data.line.y = ((float)ttf->points[p].y) - (f->cv.unscaled.h / 2.f);
+					path.data.line.x = ((float)ttf->points[p].x) - (f->cv.data.unscaledDim[0] / 2.f);
+					path.data.line.y = ((float)ttf->points[p].y) - (f->cv.data.unscaledDim[1] / 2.f);
 					f->cv.canvasPosToClient(
 						path.data.line.x, &path.data.line.x,
 						path.data.line.y, &path.data.line.y, coverage
@@ -85,16 +85,16 @@ namespace fnt {
 						prevP = (p == ttf->points.size()-1) ?(0) :(p+1);
 					}
 					if (ttf->points[prevP].on) {
-						c->initialX = ((float)ttf->points[prevP].x) - (f->cv.unscaled.w / 2.f);
-						c->initialY = ((float)ttf->points[prevP].y) - (f->cv.unscaled.h / 2.f);
+						c->initialX = ((float)ttf->points[prevP].x) - (f->cv.data.unscaledDim[0] / 2.f);
+						c->initialY = ((float)ttf->points[prevP].y) - (f->cv.data.unscaledDim[1] / 2.f);
 						f->cv.canvasPosToClient(
 							c->initialX, &c->initialX, c->initialY, &c->initialY, coverage
 						);
 					} else {
 						c->initialX = (((float)ttf->points[prevP].x) + ((float)ttf->points[p].x)) / 2.f;
 						c->initialY = (((float)ttf->points[prevP].y) + ((float)ttf->points[p].y)) / 2.f;
-						c->initialX -= f->cv.unscaled.w / 2.f;
-						c->initialY -= f->cv.unscaled.h / 2.f;
+						c->initialX -= f->cv.data.unscaledDim[0] / 2.f;
+						c->initialY -= f->cv.data.unscaledDim[1] / 2.f;
 						f->cv.canvasPosToClient(
 							c->initialX, &c->initialX, c->initialY, &c->initialY, coverage
 						);
@@ -103,8 +103,8 @@ namespace fnt {
 				gfx::path path;
 				path.type = gfx::pathTypeQuadBezier;
 
-				path.data.quadBezier.ctrlX = ((float)ttf->points[p].x) - (f->cv.unscaled.w / 2.f);
-				path.data.quadBezier.ctrlY = ((float)ttf->points[p].y) - (f->cv.unscaled.h / 2.f);
+				path.data.quadBezier.ctrlX = ((float)ttf->points[p].x) - (f->cv.data.unscaledDim[0] / 2.f);
+				path.data.quadBezier.ctrlY = ((float)ttf->points[p].y) - (f->cv.data.unscaledDim[1] / 2.f);
 				f->cv.canvasPosToClient(
 					path.data.quadBezier.ctrlX, &path.data.quadBezier.ctrlX,
 					path.data.quadBezier.ctrlY, &path.data.quadBezier.ctrlY, coverage
@@ -117,8 +117,8 @@ namespace fnt {
 					nextP = (p == 0) ?(ttf->points.size()-1) :(p-1);
 				}
 				if (ttf->points[nextP].on) {
-					path.data.quadBezier.endX = ((float)ttf->points[nextP].x) - (f->cv.unscaled.w / 2.f);
-					path.data.quadBezier.endY = ((float)ttf->points[nextP].y) - (f->cv.unscaled.h / 2.f);
+					path.data.quadBezier.endX = ((float)ttf->points[nextP].x) - (f->cv.data.unscaledDim[0] / 2.f);
+					path.data.quadBezier.endY = ((float)ttf->points[nextP].y) - (f->cv.data.unscaledDim[1] / 2.f);
 					f->cv.canvasPosToClient(
 						path.data.quadBezier.endX, &path.data.quadBezier.endX,
 						path.data.quadBezier.endY, &path.data.quadBezier.endY, coverage
@@ -128,8 +128,8 @@ namespace fnt {
 				else {
 					path.data.quadBezier.endX = (((float)ttf->points[nextP].x) + ((float)ttf->points[p].x)) / 2.f;
 					path.data.quadBezier.endY = (((float)ttf->points[nextP].y) + ((float)ttf->points[p].y)) / 2.f;
-					path.data.quadBezier.endX -= f->cv.unscaled.w / 2.f;
-					path.data.quadBezier.endY -= f->cv.unscaled.h / 2.f;
+					path.data.quadBezier.endX -= f->cv.data.unscaledDim[0] / 2.f;
+					path.data.quadBezier.endY -= f->cv.data.unscaledDim[1] / 2.f;
 					f->cv.canvasPosToClient(
 						path.data.quadBezier.endX, &path.data.quadBezier.endX,
 						path.data.quadBezier.endY, &path.data.quadBezier.endY, coverage
@@ -157,5 +157,22 @@ namespace fnt {
 				} break;
 			}
 		}
+	}
+
+	bool anyPointsSelected(glyph* g) {
+		for (size_t c = 0; c < g->contours.size(); ++c) {
+			switch (g->contours[c].type) {
+				default: dbg::log("Unrecognized point selected contour type! Weird!\n"); break;
+
+				case contourTypeTTF: {
+					for (size_t p = 0; p < g->contours[c].data.ttf.points.size(); ++p) {
+						if (g->contours[c].data.ttf.points[p].selected) {
+							return true;
+						}
+					}
+				} break;
+			}
+		}
+		return false;
 	}
 }

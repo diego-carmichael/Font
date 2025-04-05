@@ -34,6 +34,6 @@ void cr::cv::canvasSection::render(void) {
 	this->glyph->renderGlyph();
 	this->grid->render();
 	this->glyph->renderPoints(
-		&fnt::currentFont.glyphs[fnt::currentFont.currentGlyph]
+		&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph]
 	);
 }

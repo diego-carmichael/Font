@@ -9,20 +9,23 @@
 #include <string>
 
 namespace fnt {
+	typedef struct fontData fontData;
+	struct fontData {
+		std::string name;
+		std::vector<glyph> glyphs;
+		size_t currentGlyph;
+	};
+	void defaultFontData(fontData* data);
+
 	class font {
 	public:
 		font(void);
-		
+		fontData data;
 		canvas cv;
-		std::string name;
-
-		cr::actionSet actionSet;
-		cr::action action;
-
-		std::vector<glyph> glyphs;
-		size_t currentGlyph;
 
 	public:
+		cr::actionSet actionSet;
+		cr::action action;
 		ev::event onActionChange {}; // (actionDesc prevAction)
 		void changeAction(cr::actionSet actionSet, cr::action action);
 

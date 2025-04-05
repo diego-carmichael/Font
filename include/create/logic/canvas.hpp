@@ -4,18 +4,24 @@
 #include "general/event.hpp"
 
 namespace fnt {
-	class canvas {
-	public:
-		canvas(void);
-
-	public:
-		// Position relative to center of coverage
-		gfx::rect unscaled;
-		float scale;
-
+	typedef struct canvasData canvasData;
+	struct canvasData {
+		float unscaledDim[2];
 		float ascender; // Relative to top of canvas (moving down)
 		float descender; // Relative to ascender (moving down)
 		float lineGap; // Relative to ascender (moving up) / descender (moving down)
+	};
+	void defaultCanvasData(canvasData* data);
+
+	class canvas {
+	public:
+		canvas(void);
+		canvasData data;
+
+	public:
+		// Position relative to center of coverage
+		float unscaledPos[2];
+		float scale;
 
 	public:
 		// Non-relative to center of coverage (actually where it is)
