@@ -44,9 +44,7 @@ void cr::cv::bg::background::changeCoverage(gfx::rect coverage) {
 }
 
 void cr::cv::bg::mousePress(ev::listener* l, void* data) {
-	if (
-		fnt::currentFont.action != 0
-	) {
+	if (!fnt::currentFont.acState.idle) {
 		return;
 	}
 
@@ -56,23 +54,25 @@ void cr::cv::bg::mousePress(ev::listener* l, void* data) {
 		button == gfx::inp::mouseLeft &&
 		bg->sf->isKeyDown(gfx::inp::keyboardLCtrl)
 	) {
-		fnt::currentFont.changeAction(fnt::currentFont.actionSet, cr::actionCanvasMoving);
+		cr::actionState state = fnt::currentFont.acState;
+		state.ac = cr::actionCanvasMoving;
+		state.idle = false;
+		fnt::currentFont.changeAction(state);
 		bg->sf->getMousePos(&bg->lastCursorPos[0], &bg->lastCursorPos[1]);
 	}
 }
 
 void cr::cv::bg::mouseRelease(ev::listener* l, void* data) {
-	if (
-		fnt::currentFont.action == 2
-	) {
-		fnt::currentFont.changeAction(fnt::currentFont.actionSet, cr::actionCanvasIdle);
+	if (fnt::currentFont.acState.ac == cr::actionCanvasMoving) {
+		cr::actionState state = fnt::currentFont.acState;
+		state.ac = 0;
+		state.idle = true;
+		fnt::currentFont.changeAction(state);
 	}
 }
 
 void cr::cv::bg::cursorMove(ev::listener* l, void* data) {
-	if (
-		fnt::currentFont.action != 2
-	) {
+	if (fnt::currentFont.acState.ac != cr::actionCanvasMoving) {
 		return;
 	}
 
@@ -87,9 +87,7 @@ void cr::cv::bg::cursorMove(ev::listener* l, void* data) {
 }
 
 void cr::cv::bg::cursorScroll(ev::listener* l, void* data) {
-	if (
-		fnt::currentFont.action != 0
-	) {
+	if (!fnt::currentFont.acState.idle) {
 		return;
 	}
 

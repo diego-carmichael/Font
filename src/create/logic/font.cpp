@@ -17,7 +17,6 @@ void fnt::defaultFontData(fnt::fontData* data) {
 		data->glyphs[0].contours[0].data.ttf.points[0].x = 86;
 		data->glyphs[0].contours[0].data.ttf.points[0].y = 64;
 		data->glyphs[0].contours[0].data.ttf.points[0].on = true;
-		data->glyphs[0].contours[0].data.ttf.points[0].selected = true;
 		data->glyphs[0].contours[0].data.ttf.points[1].x = 120;
 		data->glyphs[0].contours[0].data.ttf.points[1].y = 64;
 		data->glyphs[0].contours[0].data.ttf.points[1].on = true;
@@ -103,22 +102,22 @@ void fnt::defaultFontData(fnt::fontData* data) {
 fnt::font::font(void) {
 	fnt::defaultFontData(&this->data);
 	fnt::defaultCanvasData(&this->cv.data);
-	this->actionSet = cr::actionSetCanvas;
-	this->action = cr::actionCanvasIdle;
+	this->acState = (cr::actionState){};
+	this->acState.set = cr::actionSetCanvas;
+	this->acState.ac = 0;
+	this->acState.data.cv = (cr::actionSetCanvasData){};
+	this->acState.idle = true;
 }
 
-void fnt::font::changeAction(cr::actionSet actionSet, cr::action action) {
+void fnt::font::changeAction(cr::actionState state) {
 	dbg::log(
-		"[ACTION] From \"" + cr::actionStr(this->actionSet, this->action) +
-		"\" to \"" + cr::actionStr(actionSet, action) + "\"\n"
+		"[ACTION] From \"" + cr::actionStr(this->acState) +
+		"\" to \"" + cr::actionStr(state) + "\"\n"
 	);
 
-	cr::actionDesc desc {};
-	desc.ac = this->action;
-	desc.set = this->actionSet;
-	this->actionSet = actionSet;
-	this->action = action;
-	onActionChange.call(&desc);
+	cr::actionState prevState = this->acState;
+	this->acState = state;
+	onActionChange.call(&prevState);
 }
 
 fnt::font fnt::currentFont {};

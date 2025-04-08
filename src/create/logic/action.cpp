@@ -1,27 +1,35 @@
 #include "create/logic/action.hpp"
 
 namespace cr {
-	std::string actionStr(actionSet set, action ac) {
-		switch (set) {
-			default: return "Unknown"; break;
+	std::string actionStr(actionState state) {
+		std::string s = "";
+		switch (state.set) {
+			default: s += "Unknown"; break;
 
 			case actionSetCanvas: {
-				switch (ac) {
-					default: return "Canvas unknown"; break;
-					case actionCanvasIdle: return "Canvas idle"; break;
-					case actionCanvasResizing: return "Canvas resizing"; break;
-					case actionCanvasMoving: return "Canvas moving"; break;
+				switch (state.ac) {
+					default: s += "Canvas unknown"; break;
+					case actionCanvasIdle: s += "Canvas idle"; break;
+						case actionCanvasMoving: s += "Canvas moving"; break;
+					case actionCanvasResizing: s += "Canvas resizing"; break;
 				}
 			} break;
 
-			case actionSetEdit: {
-				switch (ac) {
-					default: return "Edit unknown"; break;
-					case actionEditIdle: return "Edit idle"; break;
-					case actionCanvasMoving: return "Edit moving"; break;
-					case actionEditMovingPoints: return "Edit moving points"; break;
+			case actionSetGlyph: {
+				switch (state.ac) {
+					default: s += "Glyph unknown"; break;
+					case actionGlyphIdle: s += "Glyph idle"; break;
+					case actionGlyphMoving: s += "Glyph moving"; break;
+					case actionGlyphMovingPoint: s += "Glyph moving point(s)"; break;
 				}
 			} break;
 		}
+
+		if (state.idle) {
+			s += " (idle)";
+		} else {
+			s += " (non-idle)";
+		}
+		return s;
 	}
 }

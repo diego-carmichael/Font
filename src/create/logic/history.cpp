@@ -58,10 +58,84 @@ namespace cr {
 			}
 		}
 
+		std::string pointAddOccurString(pointAddData* data) {
+			if (data->pointsAdded == 1) {
+				return "Added point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Added " + std::to_string(data->pointsAdded) + " points";
+			}
+		}
+
+		std::string pointAddUndoString(pointAddData* data) {
+			if (data->pointsAdded == 1) {
+				return "Undo adding point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Undo adding " + std::to_string(data->pointsAdded) + " points";
+			}
+		}
+
+		std::string pointAddRedoString(pointAddData* data) {
+			if (data->pointsAdded == 1) {
+				return "Redo adding point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Redo adding " + std::to_string(data->pointsAdded) + " points";
+			}
+		}
+
+		std::string pointRemoveOccurString(pointRemoveData* data) {
+			if (data->pointsRemoved == 1) {
+				return "Removed point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Removed " + std::to_string(data->pointsRemoved) + " points";
+			}
+		}
+
+		std::string pointRemoveUndoString(pointRemoveData* data) {
+			if (data->pointsRemoved == 1) {
+				return "Undo removing point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Undo removing " + std::to_string(data->pointsRemoved) + " points";
+			}
+		}
+
+		std::string pointRemoveRedoString(pointRemoveData* data) {
+			if (data->pointsRemoved == 1) {
+				return "Redo removing point at ("
+					+ std::to_string(data->pos[0]) + ", "
+					+ std::to_string(data->pos[1]) + ")"
+				;
+			}
+			else {
+				return "Redo removing " + std::to_string(data->pointsRemoved) + " points";
+			}
+		}
+
 		std::string eventOccurString(eventType type, eventData* data) {
 			switch (type) {
 				default: return "Unknown event type for occur! Weird!"; break;
 				case eventPointsMove: return pointMoveOccurString(&data->pointMove); break;
+				case eventPointsAdd: return pointAddOccurString(&data->pointAdd); break;
+				case eventPointsRemove: return pointRemoveOccurString(&data->pointRemove); break;
 			}
 		}
 
@@ -69,6 +143,8 @@ namespace cr {
 			switch (type) {
 				default: return "Unknown event type for undo! Weird!"; break;
 				case eventPointsMove: return pointMoveUndoString(&data->pointMove); break;
+				case eventPointsAdd: return pointAddUndoString(&data->pointAdd); break;
+				case eventPointsRemove: return pointRemoveUndoString(&data->pointRemove); break;
 			}
 		}
 
@@ -76,6 +152,8 @@ namespace cr {
 			switch (type) {
 				default: return "Unknown event type for redo! Weird!"; break;
 				case eventPointsMove: return pointMoveRedoString(&data->pointMove); break;
+				case eventPointsAdd: return pointAddRedoString(&data->pointAdd); break;
+				case eventPointsRemove: return pointRemoveRedoString(&data->pointRemove); break;
 			}
 		}
 

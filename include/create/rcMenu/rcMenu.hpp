@@ -8,9 +8,10 @@ namespace cr {
 		public:
 			gfx::surface* sf;
 			ev::listener* actionChangeListener;
+			void* createRef;
 
 		public:
-			rcMenu(gfx::surface* sf);
+			rcMenu(gfx::surface* sf, void* createRef);
 			~rcMenu(void);
 
 			void process(void);

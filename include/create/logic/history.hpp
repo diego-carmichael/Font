@@ -25,10 +25,34 @@ namespace cr {
 		std::string pointMoveUndoString(pointMoveData* data);
 		std::string pointMoveRedoString(pointMoveData* data);
 
+		const eventType eventPointsAdd = 2;
+		typedef struct pointAddData pointAddData;
+		struct pointAddData {
+			size_t pointsAdded;
+			// If pointsAdded == 1:
+				uint32_t pos[2];
+		};
+		std::string pointAddOccurString(pointAddData* data);
+		std::string pointAddUndoString(pointAddData* data);
+		std::string pointAddRedoString(pointAddData* data);
+
+		const eventType eventPointsRemove = 3;
+		typedef struct pointRemoveData pointRemoveData;
+		struct pointRemoveData {
+			size_t pointsRemoved;
+			// If pointsRemoved == 1:
+				uint32_t pos[2];
+		};
+		std::string pointRemoveOccurString(pointRemoveData* data);
+		std::string pointRemoveUndoString(pointRemoveData* data);
+		std::string pointRemoveRedoString(pointRemoveData* data);
+
 		// Could be a union, but vector :(
 		typedef struct eventData eventData;
 		struct eventData {
 			pointMoveData pointMove;
+			pointAddData pointAdd;
+			pointRemoveData pointRemove;
 		};
 		std::string eventOccurString(eventType type, eventData* data);
 		std::string eventUndoString(eventType type, eventData* data);

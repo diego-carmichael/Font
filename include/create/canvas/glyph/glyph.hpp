@@ -20,11 +20,15 @@ namespace cr {
 			public:
 				glyph(gfx::surface* sf, gfx::rect coverage, ib::infoBox* box);
 				~glyph(void);
+
+			public:
+				void changeCoverage(gfx::rect newCoverage);
+
 			public:
 				void renderContourTTF(fnt::ttfContour* c);
 				void renderPoints(fnt::glyph* g);
 				void renderGlyph(void);
-				void changeCoverage(gfx::rect newCoverage);
+
 			public:
 				float lastCursorPos[2];
 				float initCursorPos[2];
@@ -39,6 +43,10 @@ namespace cr {
 			void mousePress(ev::listener* l, void* data);
 			void mouseRelease(ev::listener* l, void* data);
 			void cursorMove(ev::listener* l, void* data);
+
+			void closestPointSelect(float* x, float* y);
+			void onPointAdd(void* data);
+			void onPointDelete(void* data);
 		}
 	}
 }

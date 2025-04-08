@@ -16,7 +16,7 @@ cr::creationScene::creationScene(gfx::surface* sf)
 
 	this->history = new cr::hst::history(sf);
 	this->infoBox = new cr::ib::infoBox(sf, this->defaultFont);
-	this->rcMenu = new cr::rc::rcMenu(sf);
+	this->rcMenu = new cr::rc::rcMenu(sf, (void*)this);
 	this->determineCoverage();
 
 	this->resizeListener = sf->onResize.addListener(

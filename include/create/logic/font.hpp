@@ -24,10 +24,9 @@ namespace fnt {
 		canvas cv;
 
 	public:
-		cr::actionSet actionSet;
-		cr::action action;
-		ev::event onActionChange {}; // (actionDesc prevAction)
-		void changeAction(cr::actionSet actionSet, cr::action action);
+		cr::actionState acState;
+		ev::event onActionChange {}; // (actionState* prevState)
+		void changeAction(cr::actionState state);
 
 	public:
 		void glyphToShape(glyph* g, gfx::shape* s, gfx::rect coverage);
