@@ -1,6 +1,7 @@
 #include "create/canvas/glyph/glyph.hpp"
 
 #include "dbg/log.hpp"
+#include "create/logic/font.hpp"
 
 namespace cr {
 	namespace cv {
@@ -70,6 +71,12 @@ namespace cr {
 			}
 
 			void glyph::renderGlyph(void) {
+				if (fnt::currentFont.data.glyphs.size() == 0 ||
+					fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph].contours.size() == 0
+				) {
+				 	return;
+				}
+
 				gfx::shape s;
 				fnt::currentFont.glyphToShape(
 					&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph],

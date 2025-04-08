@@ -96,6 +96,11 @@ void fnt::defaultFontData(fnt::fontData* data) {
 		data->glyphs[0].contours[2].data.ttf.points[6].y = 176;
 		data->glyphs[0].contours[2].data.ttf.points[6].on = true;
 
+	/*data->glyphs[0].contours = std::vector<fnt::contour>(3);
+	data->glyphs[0].contours[0].type = fnt::contourTypeTTF;
+	data->glyphs[0].contours[0].data.ttf.in = true;
+	data->glyphs[0].contours[0].data.ttf.points = std::vector<fnt::ttfPoint>(0);*/
+
 	data->currentGlyph = 0;
 }
 

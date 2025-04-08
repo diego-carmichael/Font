@@ -39,7 +39,9 @@ namespace cr {
 					tlX, &tlX, tlY, &tlY, this->coverage
 				);
 				tlX = ceilf(tlX);
+				size_t itlX = (size_t)tlX;
 				tlY = ceilf(tlY);
+				size_t itlY = (size_t)tlY;
 				fnt::currentFont.cv.canvasPosToClient(
 					tlX, &tlX, tlY, &tlY, this->coverage
 				);
@@ -58,27 +60,35 @@ namespace cr {
 				// Vertical strips (left to right)
 				float x = tlX;
 				size_t s = 0;
+				size_t p = itlX;
 				while (x <= brX+0.001f) {
 					x = tlX + (fnt::currentFont.cv.scale * s);
-					this->sf->renderLine(
-						{ x, this->coverage.y - (this->coverage.h / 2.f) },
-						{ x, this->coverage.y + (this->coverage.h / 2.f) },
-						lineCol
-					);
+					//if ((p % 3) != 0) {
+						this->sf->renderLine(
+							{ x, this->coverage.y - (this->coverage.h / 2.f) },
+							{ x, this->coverage.y + (this->coverage.h / 2.f) },
+							lineCol
+						);
+					//}
 					++s;
+					++p;
 				}
 
 				// Horizontal strips (top to bottom)
 				float y = tlY;
 				s = 0;
+				p = itlY;
 				while (y < brY+0.001f) {
 					y = tlY + (fnt::currentFont.cv.scale * s);
-					this->sf->renderLine(
-						{ this->coverage.x - (this->coverage.w / 2.f), y },
-						{ this->coverage.x + (this->coverage.w / 2.f), y },
-						lineCol
-					);
+					//if ((p % 3) != 0) {
+						this->sf->renderLine(
+							{ this->coverage.x - (this->coverage.w / 2.f), y },
+							{ this->coverage.x + (this->coverage.w / 2.f), y },
+							lineCol
+						);
+					//}
 					++s;
+					++p;
 				}
 			}
 

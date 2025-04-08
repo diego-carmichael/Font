@@ -143,10 +143,13 @@ namespace cr {
 
 			void deletePoints(fnt::glyph* g) {
 				bool deincc = false;
-				for (size_t c = 0; c < g->contours.size(); ++c) {
+				for (size_t c = 0; c <= g->contours.size(); ++c) {
 					if (deincc) {
 						c -= 1;
 						deincc = false;
+					}
+					if (c == g->contours.size()) {
+						break;
 					}
 
 					switch (g->contours[c].type) {
@@ -155,10 +158,13 @@ namespace cr {
 						case fnt::contourTypeTTF: {
 							fnt::ttfContour* ttf = &g->contours[c].data.ttf;
 							bool deincp = false;
-							for (size_t p = 0; p < ttf->points.size(); ++p) {
+							for (size_t p = 0; p <= ttf->points.size(); ++p) {
 								if (deincp) {
 									p -= 1;
 									deincp = false;
+								}
+								if (p == ttf->points.size()) {
+									break;
 								}
 								if (ttf->points[p].selected) {
 									ttf->points.erase(ttf->points.begin() + p);
