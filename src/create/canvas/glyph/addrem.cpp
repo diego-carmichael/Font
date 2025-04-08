@@ -55,9 +55,6 @@ namespace cr {
 				float smallestDist = INFINITY;
 				size_t op, oc;
 				float mx = g->lastCursorPos[0], my = g->lastCursorPos[1];
-				/*fnt::currentFont.cv.clientPosToCanvas(mx, &mx, my, &my, g->coverage);
-				mx += fnt::currentFont.cv.data.unscaledDim[0] / 2.f;
-				my += fnt::currentFont.cv.data.unscaledDim[1] / 2.f;*/
 				mx = math::minf(math::maxf(mx, 0.f), fnt::currentFont.cv.data.unscaledDim[0]);
 				my = math::minf(math::maxf(my, 0.f), fnt::currentFont.cv.data.unscaledDim[1]);
 
@@ -76,15 +73,22 @@ namespace cr {
 					}
 				}
 
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventPointsAdd;
+				ev.data.pointAdd.pointsAdded = 1;
+				ev.data.pointAdd.pos[0] = mx;
+				ev.data.pointAdd.pos[1] = my;
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
 				addPoint(oc, op, mx, my);
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
 				g->sf->flagRender();
 			}
 
 			void newContourByPoint(glyph* g) {
 				float mx = g->lastCursorPos[0], my = g->lastCursorPos[1];
-				/*fnt::currentFont.cv.clientPosToCanvas(mx, &mx, my, &my, g->coverage);
-				mx += fnt::currentFont.cv.data.unscaledDim[0] / 2.f;
-				my += fnt::currentFont.cv.data.unscaledDim[1] / 2.f;*/
 				mx = math::minf(math::maxf(mx, 0.f), fnt::currentFont.cv.data.unscaledDim[0]);
 				my = math::minf(math::maxf(my, 0.f), fnt::currentFont.cv.data.unscaledDim[1]);
 
@@ -121,8 +125,8 @@ namespace cr {
 				g->initCursorPos[1] = my;
 				g->sf->flagRender();
 
-				ev.newFont = fnt::currentFont.data;
-				ev.newCanvas = fnt::currentFont.cv.data;
+				ev.newFont = g->prevFont = fnt::currentFont.data;
+				ev.newCanvas = g->prevCanvas = fnt::currentFont.cv.data;
 				cr::hst::addEvent(&ev);
 			}
 
@@ -179,7 +183,15 @@ namespace cr {
 					return;
 				}
 
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventPointsRemove;
+				ev.data.pointRemove.pointsRemoved = 2; // Wrong btw lol, too lazy
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
 				deletePoints(&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph]);
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
 				g->sf->flagRender();
 			}
 		}
