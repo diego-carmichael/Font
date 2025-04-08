@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gfx/shape.hpp"
+#include "general/yak.hpp"
 
 #include <vector>
 #include <cstdint>
@@ -41,4 +42,7 @@ namespace fnt {
 	};
 
 	bool anyPointsSelected(glyph* g);
+
+	yak::chunk writeGlyph(glyph* g);
+	int readGlyph(glyph* g, yak::chunk* ck, uint16_t dim[2]);
 }

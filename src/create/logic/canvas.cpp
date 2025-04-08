@@ -9,6 +9,26 @@ namespace fnt {
 		data->lineGap = 40;
 	}
 
+	const float maxUnscaledDim[2] = { 1024.f, 1024.f };
+	const float minUnscaledDim[2] = { 64.f, 64.f };
+
+	bool validateMetrics(canvasData* data) {
+		if (data->ascender == 0 || data->descender == 0 ||
+			data->lineGap == 0) {
+			return false;
+		}
+		if (data->ascender >= data->unscaledDim[1] ||
+			data->ascender + data->descender >= data->unscaledDim[1]) {
+			return false;
+		}
+		if (data->ascender - data->lineGap < 0.f ||
+			data->descender + data->lineGap > data->unscaledDim[1]) {
+			return false;
+		}
+
+		return true;
+	}
+
 	canvas::canvas(void) {
 		defaultCanvasData(&this->data);
 		this->unscaledPos[0] = 0;

@@ -35,9 +35,14 @@ namespace fnt {
 
 	extern font currentFont;
 	extern std::string currentPath;
-	void loadCurrentFont(void);
-	void saveCurrentFont(gfx::surface* sf);
+	void loadCurrentFont(std::string filename);
+	void saveCurrentFont(std::string filename);
 
 	void openFontButton(void* data); // gfx::surface*
 	void saveFontButton(void* data); // gfx::surface*
+
+	int openFile(const char* filename, fontData* fdata, canvasData* cdata);
+	int saveFile(const char* filename, fontData* fdata, canvasData* cdata);
+	extern ev::event onFontOpen; // (0)
+	extern ev::event onFontClose; // (0)
 }

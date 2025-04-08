@@ -28,10 +28,18 @@ cr::creationScene::creationScene(gfx::surface* sf)
 	this->canvasChangeListener = fnt::currentFont.cv.onCanvasChange.addListener(
 		(void*)this, cr::canvasChange
 	);
+	this->fontOpenListener = fnt::onFontOpen.addListener(
+		(void*)this, cr::fontOpen
+	);
+	this->fontCloseListener = fnt::onFontClose.addListener(
+		(void*)this, cr::fontClose
+	);
 }
 
 cr::creationScene::~creationScene(void) {
 	os::closeTimers();
+	fnt::onFontClose.removeListener(this->fontCloseListener);
+	fnt::onFontOpen.removeListener(this->fontOpenListener);
 	fnt::currentFont.cv.onCanvasChange.removeListener(this->canvasChangeListener);
 	this->sf->onRender.removeListener(this->renderListener);
 	this->sf->onResize.removeListener(this->resizeListener);
@@ -91,6 +99,16 @@ void cr::render(ev::listener* l, void* data) {
 }
 
 void cr::canvasChange(ev::listener* l, void* data) {
+	cr::creationScene* scene = (cr::creationScene*)l->data;
+	scene->sf->flagRender();
+}
+
+void cr::fontOpen(ev::listener* l, void* data) {
+	cr::creationScene* scene = (cr::creationScene*)l->data;
+	scene->sf->flagRender();
+}
+
+void cr::fontClose(ev::listener* l, void* data) {
 	cr::creationScene* scene = (cr::creationScene*)l->data;
 	scene->sf->flagRender();
 }

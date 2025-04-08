@@ -2,6 +2,7 @@
 
 #include "dbg/log.hpp"
 #include "create/logic/font.hpp"
+#include "general/bytes.hpp"
 
 namespace fnt {
 	bool isGlyphTTFContourClockwise(ttfContour* ttf) {
@@ -174,5 +175,95 @@ namespace fnt {
 			}
 		}
 		return false;
+	}
+
+	yak::chunk writeContourTTF(ttfContour* ttf) {
+		// cttf...1
+		yak::chunk c = {};
+		c.id = 0x637474662E2E2E31;
+		c.data = std::vector<uint8_t>(1 + (ttf->points.size() * 5));
+		c.data[0] = (ttf->in) ?(1) :(0);
+
+		for (size_t p = 0; p < ttf->points.size(); ++p) {
+			size_t i = 1 + (p * 5);
+			byte::be::writeu16(c.data.data()+i,   ttf->points[p].x);
+			byte::be::writeu16(c.data.data()+i+2, ttf->points[p].y);
+			c.data[i+4] = (ttf->points[p].on) ?(1) :(0);
+		}
+
+		return c;
+	}
+
+	int readContourTTF(ttfContour* ttf, yak::chunk* ck, uint16_t dim[2]) {
+		if (ck->data.size() == 0 || ((ck->data.size() - 1) % 5) != 0) {
+			dbg::log("Size of cttf...1 chunk invalid\n");
+			return -1;
+		}
+		ttf->in = (ck->data[0] == 0) ?(false) :(true);
+		ttf->points = std::vector<ttfPoint>((ck->data.size() - 1) / 5);
+
+		for (size_t p = 0; p < ttf->points.size(); ++p) {
+			size_t i = 1 + (p * 5);
+			ttf->points[p].x = byte::be::readu16(ck->data.data() + i);
+			ttf->points[p].y = byte::be::readu16(ck->data.data() + i + 2);
+			ttf->points[p].on = (ck->data[i + 4] == 0) ?(false) :(true);
+			ttf->points[p].selected = false;
+
+			if (ttf->points[p].x > dim[0] || ttf->points[p].y > dim[1]) {
+				dbg::log("Point within cttf...1 out of range\n");
+				return -1;
+			}
+		}
+
+		return 0;
+	}
+
+	yak::chunk writeGlyph(glyph* g) {
+		// glyf...1
+		yak::chunk c = {};
+		c.id = 0x676C79662E2E2E31;
+		c.data = std::vector<uint8_t>(4);
+		byte::be::writeu32(c.data.data(), g->codepoint);
+
+		for (size_t ic = 0; ic < g->contours.size(); ++ic) {
+			switch (g->contours[ic].type) {
+				default: {
+					dbg::log("Unrecognized contour type when writing glyph! Weird!\n");
+				} break;
+
+				case contourTypeTTF: {
+					c.children.push_back(writeContourTTF(&g->contours[ic].data.ttf));
+				} break;
+			}
+		}
+
+		return c;
+	}
+
+	int readGlyph(glyph* g, yak::chunk* ck, uint16_t dim[2]) {
+		if (ck->data.size() != 4) {
+			dbg::log("Invalid glyf...1 chunk size\n");
+			return -1;
+		}
+		g->codepoint = byte::be::readu32(ck->data.data());
+		g->contours = std::vector<contour>(0);
+
+		for (size_t ic = 0; ic < ck->children.size(); ++ic) {
+			switch (ck->children[ic].id) {
+				default: break;
+
+				// cttf...1
+				case 0x637474662E2E2E31: {
+					contour c = {};
+					c.type = contourTypeTTF;
+					if (readContourTTF(&c.data.ttf, &ck->children[ic], dim) != 0) {
+						return -1;
+					}
+					g->contours.push_back(c);
+				} break;
+			}
+		}
+
+		return 0;
 	}
 }

@@ -6,6 +6,7 @@
 #include "general/event.hpp"
 #include "create/infoBox/infoBox.hpp"
 #include "create/rcMenu/rcMenu.hpp"
+#include "create/logic/font.hpp"
 
 namespace cr {
 	class creationScene : public gui::scene {
@@ -18,6 +19,8 @@ namespace cr {
 		ev::listener* resizeListener;
 		ev::listener* renderListener;
 		ev::listener* canvasChangeListener;
+		ev::listener* fontOpenListener;
+		ev::listener* fontCloseListener;
 		gfx::font defaultFont;
 	public:
 		creationScene(gfx::surface* sf);
@@ -31,4 +34,6 @@ namespace cr {
 	void resize(ev::listener* l, void* data);
 	void render(ev::listener* l, void* data);
 	void canvasChange(ev::listener* l, void* data);
+	void fontOpen(ev::listener* l, void* data);
+	void fontClose(ev::listener* l, void* data);
 }

@@ -12,6 +12,9 @@ namespace fnt {
 		float lineGap; // Relative to ascender (moving up) / descender (moving down)
 	};
 	void defaultCanvasData(canvasData* data);
+	extern const float maxUnscaledDim[2];
+	extern const float minUnscaledDim[2];
+	bool validateMetrics(canvasData* data);
 
 	class canvas {
 	public:
