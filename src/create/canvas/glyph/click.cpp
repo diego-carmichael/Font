@@ -96,12 +96,17 @@ namespace cr {
 					&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph],
 					mx, my, g->sf->isKeyDown(gfx::inp::keyboardLShift)
 				);
-				fnt::currentFont.acState.data.gl.selected = fnt::anyPointsSelected(
+				bool newSelected = fnt::anyPointsSelected(
 					&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph]
 				);
 				g->sf->flagRender();
 
-				if (!fnt::currentFont.acState.data.gl.selected) {
+				if (!newSelected) {
+					if (fnt::currentFont.acState.data.gl.selected) {
+						cr::actionState state = fnt::currentFont.acState;
+						state.data.gl.selected = newSelected;
+						fnt::currentFont.changeAction(state);
+					}
 					return;
 				}
 				g->prevFont = fnt::currentFont.data;
@@ -109,6 +114,7 @@ namespace cr {
 				cr::actionState state = fnt::currentFont.acState;
 				state.idle = false;
 				state.ac = cr::actionGlyphMovingPoint;
+				state.data.gl.selected = newSelected;
 				fnt::currentFont.changeAction(state);
 
 				g->lastCursorPos[0] = mx;

@@ -41,11 +41,13 @@ namespace cr {
 					submenu.onClick = cr::cv::gl::onPointAdd;
 					menus.push_back(submenu);
 					// Remove point
-					submenu.type = gfx::menuButton;
-					submenu.title = "Remove point";
-					submenu.data = this->createRef;
-					submenu.onClick = cr::cv::gl::onPointDelete;
-					menus.push_back(submenu);
+					if (fnt::currentFont.acState.data.gl.selected) {
+						submenu.type = gfx::menuButton;
+						submenu.title = "Remove point";
+						submenu.data = this->createRef;
+						submenu.onClick = cr::cv::gl::onPointDelete;
+						menus.push_back(submenu);
+					}
 				} break;
 			}
 

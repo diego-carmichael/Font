@@ -37,10 +37,18 @@ namespace cr {
 
 					if (c->points[p].selected) {
 						this->sf->renderCircle({ px, py, radiu }, { .50f, .79f, 1.0f, 1.f });
-						this->sf->renderCircle({ px, py, 4.75f }, { .00f, .58f, 1.0f, 1.f });
+						if (c->points[p].on) {
+							this->sf->renderCircle({ px, py, 4.75f }, { .00f, .58f, 1.0f, 1.f });
+						} else {
+							this->sf->renderCircle({ px, py, 4.75f }, { 1.0f, 1.0f, 1.0f, 1.f });
+						}
 					} else {
 						this->sf->renderCircle({ px, py, radiu }, { .25f, .25f, .25f, 1.f });
-						this->sf->renderCircle({ px, py, 4.75f }, { .50f, .50f, .50f, 1.f });
+						if (c->points[p].on) {
+							this->sf->renderCircle({ px, py, 4.75f }, { .50f, .50f, .50f, 1.f });
+						} else {
+							this->sf->renderCircle({ px, py, 4.75f }, { 1.0f, 1.0f, 1.0f, 1.f });
+						}
 					}
 				}
 			}
