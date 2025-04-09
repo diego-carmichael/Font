@@ -37,7 +37,7 @@ namespace cr {
 				float initCursorPos[2];
 				fnt::fontData prevFont;
 				fnt::canvasData prevCanvas;
-				void clickPointsContourTTF(fnt::ttfContour* c, float mx, float my, bool shift);
+				void clickPointsContourTTF(fnt::ttfContour* c, float mx, float my, bool shift, bool* found);
 				void movePointsContourTTF(fnt::ttfContour* c, float mx, float my, hst::pointMoveData* data);
 				void clickPoints(fnt::glyph* g, float mx, float my, bool shift);
 				void movePoints(fnt::glyph* g, float mx, float my, hst::pointMoveData* data);

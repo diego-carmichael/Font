@@ -50,10 +50,25 @@ void os::timer(os::timeSec time, void (*callback)(void*), void* data, bool stack
 	}
 
 	if (!stack) {
+		bool found = false;
 		for (size_t t = 0; t < osw32::timerInfos.size(); ++t) {
-			if (osw32::timerInfos[t]->callback == callback) {
-				osw32::timerInfos[t]->shouldCall = false;
+			if (osw32::timerInfos[t]->callback == callback && 
+				osw32::timerInfos[t]->data == data
+			) {
+				if (found) {
+					osw32::timerInfos[t]->shouldCall = false;
+					continue;
+				}
+				ChangeTimerQueueTimer(
+					osw32::timerQueue,
+					osw32::timerInfos[t]->newTimer,
+					(DWORD)round(time * 1000.0), 0
+				);
+				found = true;
 			}
+		}
+		if (found) {
+			return;
 		}
 	}
 

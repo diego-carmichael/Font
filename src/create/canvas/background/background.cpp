@@ -87,7 +87,9 @@ void cr::cv::bg::cursorMove(ev::listener* l, void* data) {
 }
 
 void cr::cv::bg::cursorScroll(ev::listener* l, void* data) {
-	if (!fnt::currentFont.acState.idle) {
+	if (!fnt::currentFont.acState.idle && !(
+		fnt::currentFont.acState.ac == cr::actionCanvasMoving
+	)) {
 		return;
 	}
 

@@ -6,14 +6,20 @@
 namespace cr {
 	namespace cv {
 		namespace gl {
-			void glyph::clickPointsContourTTF(fnt::ttfContour* c, float mx, float my, bool shift) {
-				for (size_t p = 0; p < c->points.size(); ++p) {
+			void glyph::clickPointsContourTTF(fnt::ttfContour* c, float mx, float my, bool shift, bool* found) {
+				for (size_t ap = 0; ap < c->points.size(); ++ap) {
+					size_t p = (c->points.size()-ap)-1;
+					if (!shift && *found) {
+						c->points[p].selected = false;
+						continue;
+					}
 					float px = c->points[p].x, py = c->points[p].y;
 					px -= fnt::currentFont.cv.data.unscaledDim[0] / 2.f;
 					py -= fnt::currentFont.cv.data.unscaledDim[1] / 2.f;
 					fnt::currentFont.cv.canvasPosToClient(px, &px, py, &py, this->coverage);
 
-					bool hover = (mx-px)*(mx-px) + (my-py)*(my-py) <= this->pointBigRadius*this->pointBigRadius;
+					float rad = this->pointBigRadius * 2.f;
+					bool hover = (mx-px)*(mx-px) + (my-py)*(my-py) <= rad*rad;
 					if (!hover) {
 						if (!shift && c->points[p].selected) {
 							c->points[p].selected = false;
@@ -22,6 +28,9 @@ namespace cr {
 						if (!c->points[p].selected) {
 							c->points[p].selected = true;
 						}
+					}
+					if (c->points[p].selected) {
+						*found = true;
 					}
 				}
 			}
@@ -58,12 +67,14 @@ namespace cr {
 			}
 
 			void glyph::clickPoints(fnt::glyph* g, float mx, float my, bool shift) {
-				for (size_t c = 0; c < g->contours.size(); ++c) {
+				bool found = false;
+				for (size_t ac = 0; ac < g->contours.size(); ++ac) {
+					size_t c = (g->contours.size()-ac)-1;
 					switch (g->contours[c].type) {
 						default: dbg::log("Unrecognized click glyph contour type! Weird!\n"); break;
 
 						case fnt::contourTypeTTF: {
-							this->clickPointsContourTTF(&g->contours[c].data.ttf, mx, my, shift);
+							this->clickPointsContourTTF(&g->contours[c].data.ttf, mx, my, shift, &found);
 						} break;
 					}
 				}

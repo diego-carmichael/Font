@@ -140,16 +140,6 @@ void gfx::surface::renderCircle(gfx::circle c, gfx::col color) {
 	win->ren.target->FillEllipse(&ellipse, win->ren.brush);
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1rendertarget-drawline
-void gfx::surface::renderLine(gfx::point p0, gfx::point p1, gfx::col color) {
-	osw32::window* win = (osw32::window*)this->data;
-	osw32::brushCol(&win->ren, color);
-	win->ren.target->DrawLine(
-		{ p0.x, p0.y }, { p1.x, p1.y },
-		win->ren.brush, 1.f, NULL
-	);
-}
-
 // https://learn.microsoft.com/en-us/windows/win32/direct2d/how-to--draw-text
 void gfx::surface::renderText(gfx::font* f, std::wstring str, gfx::rect bound, gfx::col color, gfx::rect* tightBound) {
 	osw32::font* font = (osw32::font*)f->data;

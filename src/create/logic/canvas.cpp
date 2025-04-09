@@ -2,11 +2,11 @@
 
 namespace fnt {
 	void defaultCanvasData(canvasData* data) {
-		data->unscaledDim[0] = 256;
-		data->unscaledDim[1] = 256;
-		data->ascender = 64;
-		data->descender = 128;
-		data->lineGap = 40;
+		data->unscaledDim[0] = 128;
+		data->unscaledDim[1] = 128;
+		data->ascender = 32;
+		data->descender = 64;
+		data->lineGap = 20;
 	}
 
 	const float maxUnscaledDim[2] = { 1024.f, 1024.f };
@@ -33,7 +33,7 @@ namespace fnt {
 		defaultCanvasData(&this->data);
 		this->unscaledPos[0] = 0;
 		this->unscaledPos[1] = 0;
-		this->scale = 1;
+		this->scale = 2.5;
 	}
 
 	gfx::rect canvas::getUnscaled(gfx::rect coverage) {

@@ -18,10 +18,10 @@ namespace cr {
 
 			}
 
-			float scaleBegin = 7.f;
-			float scaleEnd = 14.f;
+			float scaleBegin = 5.f;
+			float scaleEnd = 8.f;
 			float maxAlpha = 0.5f;
-			gfx::col lineCol = { 0.5f, 0.5f, 0.5f, 1.f };
+			gfx::col lineCol = { 164.f / 255.f, 172.f / 255.f, 249.f / 255.f, 1.f };
 
 			void grid::render(void) {
 				if (fnt::currentFont.cv.scale < scaleBegin) {
@@ -63,13 +63,14 @@ namespace cr {
 				size_t p = itlX;
 				while (x <= brX+0.001f) {
 					x = tlX + (fnt::currentFont.cv.scale * s);
-					//if ((p % 3) != 0) {
-						this->sf->renderLine(
-							{ x, this->coverage.y - (this->coverage.h / 2.f) },
-							{ x, this->coverage.y + (this->coverage.h / 2.f) },
-							lineCol
-						);
-					//}
+					this->sf->renderLine(
+						(gfx::line) {
+							x, this->coverage.y - (this->coverage.h / 2.f),
+							x, this->coverage.y + (this->coverage.h / 2.f),
+							//((p % 3) != 0) ?(1.5f) :(2.5f)
+							1.f
+						}, lineCol
+					);
 					++s;
 					++p;
 				}
@@ -80,13 +81,14 @@ namespace cr {
 				p = itlY;
 				while (y < brY+0.001f) {
 					y = tlY + (fnt::currentFont.cv.scale * s);
-					//if ((p % 3) != 0) {
-						this->sf->renderLine(
-							{ this->coverage.x - (this->coverage.w / 2.f), y },
-							{ this->coverage.x + (this->coverage.w / 2.f), y },
-							lineCol
-						);
-					//}
+					this->sf->renderLine(
+						(gfx::line) {
+							this->coverage.x - (this->coverage.w / 2.f), y,
+							this->coverage.x + (this->coverage.w / 2.f), y,
+							//((p % 3) != 0) ?(1.5f) :(2.5f)
+							1.f
+						}, lineCol
+					);
 					++s;
 					++p;
 				}
