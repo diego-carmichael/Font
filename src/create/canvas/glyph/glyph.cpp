@@ -22,9 +22,21 @@ namespace cr {
 				this->cursorMoveListener = sf->onCursorMove.addListener(
 					(void*)this, cursorMove
 				);
+				this->eventAddListener = cr::hst::onEventAdd.addListener(
+					(void*)this, cr::cv::gl::event
+				);
+				this->eventUndoListener = cr::hst::onEventUndo.addListener(
+					(void*)this, cr::cv::gl::event
+				);
+				this->eventRedoListener = cr::hst::onEventRedo.addListener(
+					(void*)this, cr::cv::gl::event
+				);
 			}
 
 			glyph::~glyph(void) {
+				cr::hst::onEventRedo.removeListener(this->eventRedoListener);
+				cr::hst::onEventUndo.removeListener(this->eventUndoListener);
+				cr::hst::onEventAdd.removeListener(this->eventAddListener);
 				this->sf->onCursorMove.removeListener(this->cursorMoveListener);
 				this->sf->onMouseRelease.removeListener(this->mouseReleaseListener);
 				this->sf->onMousePress.removeListener(this->mousePressListener);
@@ -32,6 +44,15 @@ namespace cr {
 
 			void glyph::changeCoverage(gfx::rect newCoverage) {
 				this->coverage = newCoverage;
+			}
+
+			void event(ev::listener* l, void* data) {
+				if (fnt::currentFont.acState.set != cr::actionSetGlyph) {
+					return;
+				}
+				fnt::currentFont.acState.data.gl.selected = fnt::anyPointsSelected(
+					&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph]
+				);
 			}
 		}
 	}

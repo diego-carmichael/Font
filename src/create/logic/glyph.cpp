@@ -5,14 +5,47 @@
 #include "general/bytes.hpp"
 
 namespace fnt {
+	void ttfContourPos(ttfContour* ttf, size_t p, float* x, float* y) {
+		if (ttf->points[p].on) {
+			*x = ttf->points[p].x;
+			*y = ttf->points[p].y;
+			return;
+		}
+
+		size_t next = (p == ttf->points.size()-1) ?(0) :(p+1);
+		size_t prev = (p == 0) ?(ttf->points.size()-1) :(p-1);
+		float fx = ttf->points[p].x;
+		float fy = ttf->points[p].y;
+		float px = ttf->points[prev].x;
+		float py = ttf->points[prev].y;
+		if (!ttf->points[prev].on) {
+			px = (px + fx) / 2.f;
+			py = (py + fy) / 2.f;
+		}
+		float nx = ttf->points[next].x;
+		float ny = ttf->points[next].y;
+		if (!ttf->points[next].on) {
+			nx = (nx + fx) / 2.f;
+			ny = (ny + fy) / 2.f;
+		}
+		*x = fx + (((1.f - .5f) * (1.f - .5f)) * (px - fx)) + ((.5f * .5f) * (nx - fx));
+		*y = fx + (((1.f - .5f) * (1.f - .5f)) * (px - fx)) + ((.5f * .5f) * (nx - fx));
+	}
+
 	bool isGlyphTTFContourClockwise(ttfContour* ttf) {
 		float sum = 0.f;
 		for (size_t p = 0; p < ttf->points.size(); ++p) {
-			size_t next = (p == ttf->points.size()-1) ?(0) :(p+1);
-			sum += 
-				(ttf->points[next].x - ttf->points[p].x) *
-				(ttf->points[next].y + ttf->points[p].y)
-			;
+			size_t np = (p == ttf->points.size()-1) ?(0) :(p+1);
+			float x, y, nx, ny;
+			ttfContourPos(ttf, p, &x, &y);
+			ttfContourPos(ttf, np, &nx, &ny);
+			sum += (nx - x) * (ny + y);
+
+			if (!ttf->points[p].on && !ttf->points[np].on) {
+				float nnx = (((float)ttf->points[p].x) + ((float)ttf->points[np].x)) / 2.f;
+				float nny = (((float)ttf->points[p].y) + ((float)ttf->points[np].y)) / 2.f;
+				sum += (nnx - nx) * (nny + ny);
+			}
 		}
 		return sum >= 0.f;
 	}

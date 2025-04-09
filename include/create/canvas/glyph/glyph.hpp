@@ -16,6 +16,9 @@ namespace cr {
 				ev::listener* mousePressListener;
 				ev::listener* mouseReleaseListener;
 				ev::listener* cursorMoveListener;
+				ev::listener* eventAddListener;
+				ev::listener* eventUndoListener;
+				ev::listener* eventRedoListener;
 				float pointBigRadius;
 			public:
 				glyph(gfx::surface* sf, gfx::rect coverage, ib::infoBox* box);
@@ -43,6 +46,7 @@ namespace cr {
 			void mousePress(ev::listener* l, void* data);
 			void mouseRelease(ev::listener* l, void* data);
 			void cursorMove(ev::listener* l, void* data);
+			void event(ev::listener* l, void* data);
 
 			void closestPointSelect(float* x, float* y);
 			void onPointAdd(void* data);
