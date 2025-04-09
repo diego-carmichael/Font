@@ -22,9 +22,17 @@ namespace cr {
 					pny -= fnt::currentFont.cv.data.unscaledDim[1] / 2.f;
 					fnt::currentFont.cv.canvasPosToClient(pnx, &pnx, pny, &pny, this->coverage);
 					if (c->points[p].selected || c->points[nextp].selected) {
-						this->sf->renderLine({ px, py, pnx, pny, 5.f }, { .25f, .68f, 1.0f, .50f });
+						if (c->in) {
+							this->sf->renderLine({ px, py, pnx, pny, 5.f }, { .25f, .68f, 1.0f, .50f });
+						} else {
+							this->sf->renderDashedLine({ px, py, pnx, pny, 5.f }, { .25f, .68f, 1.0f, .50f });
+						}
 					} else {
-						this->sf->renderDashedLine({ px, py, pnx, pny, 3.f }, { .50f, .50f, .50f, .50f });
+						if (c->in) {
+							this->sf->renderLine({ px, py, pnx, pny, 4.f }, { .50f, .50f, .50f, .50f });
+						} else {
+							this->sf->renderDashedLine({ px, py, pnx, pny, 4.f }, { .50f, .50f, .50f, .50f });
+						}
 					}
 				}
 

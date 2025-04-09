@@ -1,3 +1,4 @@
+// This file is great don't worry about it
 #include "create/canvas/glyph/glyph.hpp"
 
 #include "dbg/log.hpp"
@@ -270,6 +271,79 @@ namespace cr {
 				onPointSwitch(g, &ev.data.pointSwitch, false);
 				if (ev.data.pointSwitch.pointsSwitched == 0) {
 					dbg::log("No points switched, nevermind\n");
+					return;
+				}
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
+				g->sf->flagRender();
+			}
+
+			void onContourSwitch(glyph* g, cr::hst::contourSwitchData* data, bool in) {
+				data->in = in;
+				fnt::glyph* fglyph = &fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph];
+				for (size_t c = 0; c < fglyph->contours.size(); ++c) {
+					switch (fglyph->contours[c].type) {
+						default: dbg::log("Unrecognized contour type in onContourSwitch!\n"); break;
+
+						case fnt::contourTypeTTF: {
+							bool selected = false;
+							fnt::ttfContour* ttf = &fglyph->contours[c].data.ttf;
+							for (size_t p = 0; p < ttf->points.size(); ++p) {
+								if (ttf->points[p].selected) {
+									selected = true;
+									break;
+								}
+							}
+
+							if ((!selected) || (ttf->in == in)) {
+								continue;
+							}
+							data->contoursSwitched += 1;
+							ttf->in = in;
+						} break;
+					}
+				}
+			}
+
+			void onContourSwitchIn(void* data) {
+				dbg::log("Switching contour inside...\n");
+				glyph* g = ((cr::creationScene*)data)->canvas->glyph;
+				if (!fnt::currentFont.acState.data.gl.selected) {
+					dbg::log("No points selected, nevermind\n");
+					return;
+				}
+
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventContourSwitch;
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
+				onContourSwitch(g, &ev.data.contourSwitch, true);
+				if (ev.data.contourSwitch.contoursSwitched == 0) {
+					dbg::log("No contours switched, nevermind\n");
+					return;
+				}
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
+				g->sf->flagRender();
+			}
+
+			void onContourSwitchOut(void* data) {
+				dbg::log("Switching contour inside...\n");
+				glyph* g = ((cr::creationScene*)data)->canvas->glyph;
+				if (!fnt::currentFont.acState.data.gl.selected) {
+					dbg::log("No points selected, nevermind\n");
+					return;
+				}
+
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventContourSwitch;
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
+				onContourSwitch(g, &ev.data.contourSwitch, false);
+				if (ev.data.contourSwitch.contoursSwitched == 0) {
+					dbg::log("No contours switched, nevermind\n");
 					return;
 				}
 				ev.newFont = fnt::currentFont.data;

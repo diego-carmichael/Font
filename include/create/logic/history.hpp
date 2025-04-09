@@ -59,6 +59,16 @@ namespace cr {
 		std::string pointSwitchUndoString(pointSwitchData* data);
 		std::string pointSwitchRedoString(pointSwitchData* data);
 
+		const eventType eventContourSwitch = 5;
+		typedef struct contourSwitchData contourSwitchData;
+		struct contourSwitchData {
+			size_t contoursSwitched;
+			bool in;
+		};
+		std::string contourSwitchOccurString(contourSwitchData* data);
+		std::string contourSwitchUndoString(contourSwitchData* data);
+		std::string contourSwitchRedoString(contourSwitchData* data);
+
 		// Could be a union, but vector :(
 		typedef struct eventData eventData;
 		struct eventData {
@@ -66,6 +76,7 @@ namespace cr {
 			pointAddData pointAdd;
 			pointRemoveData pointRemove;
 			pointSwitchData pointSwitch;
+			contourSwitchData contourSwitch;
 		};
 		std::string eventOccurString(eventType type, eventData* data);
 		std::string eventUndoString(eventType type, eventData* data);

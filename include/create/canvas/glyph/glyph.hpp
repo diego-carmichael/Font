@@ -53,6 +53,8 @@ namespace cr {
 			void onPointDelete(void* data);
 			void onPointSwitchOn(void* data);
 			void onPointSwitchOff(void* data);
+			void onContourSwitchIn(void* data);
+			void onContourSwitchOut(void* data);
 		}
 	}
 }

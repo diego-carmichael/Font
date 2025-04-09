@@ -61,6 +61,19 @@ namespace cr {
 						submenu.onClick = cr::cv::gl::onPointSwitchOff;
 						menus.push_back(submenu);
 					}
+					// Switch contour in + out
+					if (fnt::currentFont.acState.data.gl.selected) {
+						submenu.type = gfx::menuButton;
+						submenu.title = "Switch contour inside";
+						submenu.data = this->createRef;
+						submenu.onClick = cr::cv::gl::onContourSwitchIn;
+						menus.push_back(submenu);
+						submenu.type = gfx::menuButton;
+						submenu.title = "Switch contour outside";
+						submenu.data = this->createRef;
+						submenu.onClick = cr::cv::gl::onContourSwitchOut;
+						menus.push_back(submenu);
+					}
 				} break;
 			}
 

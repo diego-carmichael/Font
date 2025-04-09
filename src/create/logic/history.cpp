@@ -206,6 +206,51 @@ namespace cr {
 			return s;
 		}
 
+		std::string contourSwitchOccurString(contourSwitchData* data) {
+			std::string s = "Switched " + std::to_string(data->contoursSwitched);
+			if (data->contoursSwitched == 1) {
+				s += " contour ";
+			} else {
+				s += " contours ";
+			}
+			if (data->in) {
+				s += "inside";
+			} else {
+				s += "outside";
+			}
+			return s;
+		}
+
+		std::string contourSwitchUndoString(contourSwitchData* data) {
+			std::string s = "Undo switching " + std::to_string(data->contoursSwitched);
+			if (data->contoursSwitched == 1) {
+				s += " contour ";
+			} else {
+				s += " contours ";
+			}
+			if (data->in) {
+				s += "inside";
+			} else {
+				s += "outside";
+			}
+			return s;
+		}
+
+		std::string contourSwitchRedoString(contourSwitchData* data) {
+			std::string s = "Redo switching " + std::to_string(data->contoursSwitched);
+			if (data->contoursSwitched == 1) {
+				s += " contour ";
+			} else {
+				s += " contours ";
+			}
+			if (data->in) {
+				s += "inside";
+			} else {
+				s += "outside";
+			}
+			return s;
+		}
+
 		std::string eventOccurString(eventType type, eventData* data) {
 			switch (type) {
 				default: return "Unknown event type for occur! Weird!"; break;
@@ -213,6 +258,7 @@ namespace cr {
 				case eventPointsAdd: return pointAddOccurString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveOccurString(&data->pointRemove); break;
 				case eventPointsSwitch: return pointSwitchOccurString(&data->pointSwitch); break;
+				case eventContourSwitch: return contourSwitchOccurString(&data->contourSwitch); break;
 			}
 		}
 
@@ -223,6 +269,7 @@ namespace cr {
 				case eventPointsAdd: return pointAddUndoString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveUndoString(&data->pointRemove); break;
 				case eventPointsSwitch: return pointSwitchUndoString(&data->pointSwitch); break;
+				case eventContourSwitch: return contourSwitchUndoString(&data->contourSwitch); break;
 			}
 		}
 
@@ -233,6 +280,7 @@ namespace cr {
 				case eventPointsAdd: return pointAddRedoString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveRedoString(&data->pointRemove); break;
 				case eventPointsSwitch: return pointSwitchRedoString(&data->pointSwitch); break;
+				case eventContourSwitch: return contourSwitchRedoString(&data->contourSwitch); break;
 			}
 		}
 
