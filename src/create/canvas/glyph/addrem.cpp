@@ -141,7 +141,7 @@ namespace cr {
 				closestPointAdd(g);
 			}
 
-			void deletePoints(fnt::glyph* g) {
+			void deletePoints(fnt::glyph* g, cr::hst::pointRemoveData* data) {
 				bool deincc = false;
 				for (size_t c = 0; c <= g->contours.size(); ++c) {
 					if (deincc) {
@@ -167,6 +167,11 @@ namespace cr {
 									break;
 								}
 								if (ttf->points[p].selected) {
+									data->pointsRemoved += 1;
+									if (data->pointsRemoved == 1) {
+										data->pos[0] = ttf->points[p].x;
+										data->pos[1] = ttf->points[p].y;
+									}
 									ttf->points.erase(ttf->points.begin() + p);
 									if (ttf->points.size() <= 1) {
 										g->contours.erase(g->contours.begin() + c);
@@ -191,10 +196,82 @@ namespace cr {
 
 				cr::hst::event ev {};
 				ev.type = cr::hst::eventPointsRemove;
-				ev.data.pointRemove.pointsRemoved = 2; // Wrong btw lol, too lazy
 				ev.prevFont = fnt::currentFont.data;
 				ev.prevCanvas = fnt::currentFont.cv.data;
-				deletePoints(&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph]);
+				deletePoints(
+					&fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph],
+					&ev.data.pointRemove
+				);
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
+				g->sf->flagRender();
+			}
+
+			void onPointSwitch(glyph* g, cr::hst::pointSwitchData* data, bool on) {
+				data->on = on;
+				fnt::glyph* fglyph = &fnt::currentFont.data.glyphs[fnt::currentFont.data.currentGlyph];
+				for (size_t c = 0; c < fglyph->contours.size(); ++c) {
+					switch (fglyph->contours[c].type) {
+						default: dbg::log("Unrecognized contour type in onPointSwitch!\n"); break;
+
+						case fnt::contourTypeTTF: {
+							fnt::ttfContour* ttf = &fglyph->contours[c].data.ttf;
+							for (size_t p = 0; p < ttf->points.size(); ++p) {
+								if (ttf->points[p].selected && ttf->points[p].on != on) {
+									data->pointsSwitched += 1;
+									if (data->pointsSwitched == 1) {
+										data->pos[0] = ttf->points[p].x;
+										data->pos[1] = ttf->points[p].y;
+									}
+									ttf->points[p].on = on;
+								}
+							}
+						} break;
+					}
+				}
+			}
+
+			void onPointSwitchOn(void* data) {
+				dbg::log("Switching points on...\n");
+				glyph* g = ((cr::creationScene*)data)->canvas->glyph;
+				if (!fnt::currentFont.acState.data.gl.selected) {
+					dbg::log("No points selected, nevermind\n");
+					return;
+				}
+
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventPointsSwitch;
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
+				onPointSwitch(g, &ev.data.pointSwitch, true);
+				if (ev.data.pointSwitch.pointsSwitched == 0) {
+					dbg::log("No points switched, nevermind\n");
+					return;
+				}
+				ev.newFont = fnt::currentFont.data;
+				ev.newCanvas = fnt::currentFont.cv.data;
+				cr::hst::addEvent(&ev);
+				g->sf->flagRender();
+			}
+
+			void onPointSwitchOff(void* data) {
+				dbg::log("Switching points off...\n");
+				glyph* g = ((cr::creationScene*)data)->canvas->glyph;
+				if (!fnt::currentFont.acState.data.gl.selected) {
+					dbg::log("No points selected, nevermind\n");
+					return;
+				}
+
+				cr::hst::event ev {};
+				ev.type = cr::hst::eventPointsSwitch;
+				ev.prevFont = fnt::currentFont.data;
+				ev.prevCanvas = fnt::currentFont.cv.data;
+				onPointSwitch(g, &ev.data.pointSwitch, false);
+				if (ev.data.pointSwitch.pointsSwitched == 0) {
+					dbg::log("No points switched, nevermind\n");
+					return;
+				}
 				ev.newFont = fnt::currentFont.data;
 				ev.newCanvas = fnt::currentFont.cv.data;
 				cr::hst::addEvent(&ev);

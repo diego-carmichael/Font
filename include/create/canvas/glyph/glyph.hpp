@@ -51,6 +51,8 @@ namespace cr {
 			void closestPointSelect(float* x, float* y);
 			void onPointAdd(void* data);
 			void onPointDelete(void* data);
+			void onPointSwitchOn(void* data);
+			void onPointSwitchOff(void* data);
 		}
 	}
 }

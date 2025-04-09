@@ -1,3 +1,4 @@
+// This is an amazing file, don't worry about it
 #include "create/logic/history.hpp"
 
 #include "dbg/log.hpp"
@@ -130,12 +131,88 @@ namespace cr {
 			}
 		}
 
+		std::string pointSwitchOccurString(pointSwitchData* data) {
+			std::string s = "";
+			if (data->pointsSwitched == 1) {
+				s += "Point switched from ";
+				if (data->on) {
+					s += "off to on ";
+				} else {
+					s += "on to off ";
+				}
+				s += "at (";
+				s += std::to_string(data->pos[0]) + ", ";
+				s += std::to_string(data->pos[1]) + ")";
+			}
+			else {
+				s += std::to_string(data->pointsSwitched);
+				s += " points switched ";
+				if (data->on) {
+					s += "on";
+				} else {
+					s += "off";
+				}
+			}
+			return s;
+		}
+
+		std::string pointSwitchUndoString(pointSwitchData* data) {
+			std::string s = "Undo ";
+			if (data->pointsSwitched == 1) {
+				s += "point switching ";
+				if (data->on) {
+					s += "on (back to off) ";
+				} else {
+					s += "off (back to on) ";
+				}
+				s += "at (";
+				s += std::to_string(data->pos[0]) + ", ";
+				s += std::to_string(data->pos[1]) + ")";
+			}
+			else {
+				s += std::to_string(data->pointsSwitched);
+				s += " points switched ";
+				if (data->on) {
+					s += "on";
+				} else {
+					s += "off";
+				}
+			}
+			return s;
+		}
+
+		std::string pointSwitchRedoString(pointSwitchData* data) {
+			std::string s = "Redo ";
+			if (data->pointsSwitched == 1) {
+				s += "point switching ";
+				if (data->on) {
+					s += "off to on ";
+				} else {
+					s += "on to off ";
+				}
+				s += "at (";
+				s += std::to_string(data->pos[0]) + ", ";
+				s += std::to_string(data->pos[1]) + ")";
+			}
+			else {
+				s += std::to_string(data->pointsSwitched);
+				s += " points switched ";
+				if (data->on) {
+					s += "on";
+				} else {
+					s += "off";
+				}
+			}
+			return s;
+		}
+
 		std::string eventOccurString(eventType type, eventData* data) {
 			switch (type) {
 				default: return "Unknown event type for occur! Weird!"; break;
 				case eventPointsMove: return pointMoveOccurString(&data->pointMove); break;
 				case eventPointsAdd: return pointAddOccurString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveOccurString(&data->pointRemove); break;
+				case eventPointsSwitch: return pointSwitchOccurString(&data->pointSwitch); break;
 			}
 		}
 
@@ -145,6 +222,7 @@ namespace cr {
 				case eventPointsMove: return pointMoveUndoString(&data->pointMove); break;
 				case eventPointsAdd: return pointAddUndoString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveUndoString(&data->pointRemove); break;
+				case eventPointsSwitch: return pointSwitchUndoString(&data->pointSwitch); break;
 			}
 		}
 
@@ -154,6 +232,7 @@ namespace cr {
 				case eventPointsMove: return pointMoveRedoString(&data->pointMove); break;
 				case eventPointsAdd: return pointAddRedoString(&data->pointAdd); break;
 				case eventPointsRemove: return pointRemoveRedoString(&data->pointRemove); break;
+				case eventPointsSwitch: return pointSwitchRedoString(&data->pointSwitch); break;
 			}
 		}
 

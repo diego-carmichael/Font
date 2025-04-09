@@ -47,12 +47,25 @@ namespace cr {
 		std::string pointRemoveUndoString(pointRemoveData* data);
 		std::string pointRemoveRedoString(pointRemoveData* data);
 
+		const eventType eventPointsSwitch = 4;
+		typedef struct pointSwitchData pointSwitchData;
+		struct pointSwitchData {
+			size_t pointsSwitched;
+			bool on;
+			// If pointsSwitched == 1:
+				uint32_t pos[2];
+		};
+		std::string pointSwitchOccurString(pointSwitchData* data);
+		std::string pointSwitchUndoString(pointSwitchData* data);
+		std::string pointSwitchRedoString(pointSwitchData* data);
+
 		// Could be a union, but vector :(
 		typedef struct eventData eventData;
 		struct eventData {
 			pointMoveData pointMove;
 			pointAddData pointAdd;
 			pointRemoveData pointRemove;
+			pointSwitchData pointSwitch;
 		};
 		std::string eventOccurString(eventType type, eventData* data);
 		std::string eventUndoString(eventType type, eventData* data);

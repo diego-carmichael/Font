@@ -48,6 +48,19 @@ namespace cr {
 						submenu.onClick = cr::cv::gl::onPointDelete;
 						menus.push_back(submenu);
 					}
+					// Switch point on + off
+					if (fnt::currentFont.acState.data.gl.selected) {
+						submenu.type = gfx::menuButton;
+						submenu.title = "Switch point on";
+						submenu.data = this->createRef;
+						submenu.onClick = cr::cv::gl::onPointSwitchOn;
+						menus.push_back(submenu);
+						submenu.type = gfx::menuButton;
+						submenu.title = "Switch point off";
+						submenu.data = this->createRef;
+						submenu.onClick = cr::cv::gl::onPointSwitchOff;
+						menus.push_back(submenu);
+					}
 				} break;
 			}
 
